@@ -1,0 +1,15 @@
+simple_model:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+ 
+  base_to_second_joint_position_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: joint_left_wheel
+    pid: {p: 1.0, i: 0.0, d: 1.0}
+
+  base_to_first_joint_position_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: joint_right_wheel
+    pid: {p: 1.0, i: 0.0, d: 1.0}
+

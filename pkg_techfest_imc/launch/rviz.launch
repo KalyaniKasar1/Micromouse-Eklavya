@@ -1,0 +1,17 @@
+<launch>
+
+    <param name="robot_description" command="cat '$(find pkg_techfest_imc)/urdf/micromouse_robot.urdf'" />
+
+    <!-- send fake joint values -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <param name="use_gui" value="False"/>
+    </node>
+
+    <!-- Combine joint values -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+    <!-- Show in Rviz   -->
+    <!-- <node name="rviz" pkg="rviz" type="rviz" /> -->
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find pkg_techfest_imc)/rviz/rviz_scan_config.rviz" />
+
+</launch>
