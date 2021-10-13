@@ -15,7 +15,7 @@ import math
 # Global Variables
 sensor_l, sensor_c, sensor_r = 0, 0, 0
 pub = None 
-flagl=flagf=flagr=0
+flagl=flagf=flagr=0  #flags to check for walls in front or left or right
 msg1 = Twist()
 
 def clbk_laser(msg):
@@ -45,7 +45,7 @@ def check_left() : #checks if wall is present on the left
     global sensor_l, sensor_c, sensor_r, flagl, flagf, flagr, msg1
     print("Inside checkleft")
     if sensor_l >= 9 :
-        flagl=1  #wall
+        flagl=1  #wall on left
     elif sensor_l>6 and sensor_l<8 : 
         print("Taking a turn")
         flagl=2
@@ -55,6 +55,34 @@ def check_left() : #checks if wall is present on the left
         bot_rot.target=90.0
         bot_rot.main() #turn left
         
+def check_right() : #checks if wall is present on the right
+    global sensor_l, sensor_c, sensor_r, flagl, flagf, flagr, msg1
+    print("Inside checkright")
+    if sensor_r >= 9 :
+        flagr=1  #wall on right
+        msg1.linear.x=0
+        pub_.publish(msg1)
+        
+        bot_rot.target=180.0
+        bot_rot.main() #turn 180, dead end
+        
+    elif sensor_r>6 and sensor_r<8 : 
+        print("Taking a turn")
+        flagr=2
+        msg1.linear.x=0
+        pub_.publish(msg1)
+        
+        bot_rot.target=-90.0
+        bot_rot.main() #turn right
+        
+def check_front() : #checks if wall is present in front
+     global sensor_l, sensor_c, sensor_r, flagl, flagf, flagr, msg1
+     print("Inside checkfront")
+     if sensor_c <=8 :
+         flagf=1 #wall in front
+     elif sensor_c >=22 :
+         flagf=0
+         #pidtune
     
     
 def main():
@@ -73,36 +101,14 @@ def main():
     while not rospy.is_shutdown():
 
         check_left()
+        if flagl== 1 : #if wall on left
+            check_front()
+            if flagf==1 : #if wall in front
+                check_right()
+                
+        flagl=flagf=flagr=0 
         
-        '''if flagl== 1 :
-            pidtune()
-            if (cond for checking wall in front) :
-            #if (cond for checking wall in front) :
-                flagf=1
-                if (cond for checking if wall on right) :
-                    flagr=1
-                    turn(180) #dead end
-                else
-                    turn(-90) #right turn
-            else :
-                continue/keep moving & PIDDDD 
-        elif flagl==2 :
-            bot_rot.target=90.0
-            bot_rot.main() #turn left
-            
-        flagl=flagf=flagr=0 '''
-        
-        ''''if state_ == 0:
-            print("Inside rospy not shutdown find_wall()")
-            msg = find_wall()
-        elif state_ == 1:
-            msg = turn_left()
-        elif state_ == 2:
-            msg = follow_the_wall()
-            pass
-        else:
-            rospy.logerr('Unknown state!') '''
-        
+        msg1.angular.z=0.0
         msg1.linear.x=0.35
         pub_.publish(msg1)
         
