@@ -8,12 +8,13 @@ from nav_msgs.msg import Odometry
 from tf import transformations
 from std_srvs.srv import *
 from statistics import mean
-import bot_rot
-import bot_mov 
+from bot_rot import *
+from bot_mov import * 
 import math
 
 # Global Variables
 sensor_l, sensor_c, sensor_r = 0, 0, 0
+state_=0
 pub = None 
 flagl=flagf=flagr=0  #flags to check for walls in front or left or right
 msg1 = Twist()
@@ -43,37 +44,45 @@ def clbk_laser(msg):
 
 def check_left() : #checks if wall is present on the left
     global sensor_l, sensor_c, sensor_r, flagl, flagf, flagr, msg1
-    print("Inside checkleft")
-    if sensor_l >= 9 :
+    print("Inside checkleft...\n...\n....")
+    #state=2
+    #if sensor_l >= 9 :
+    if sensor_l >= 9 and sensor_l<=20:
         flagl=1  #wall on left
-    elif sensor_l>6 and sensor_l<8 : 
-        print("Taking a turn")
+    #elif sensor_l>6 and sensor_l<8 :
+    elif sensor_l>30 and ((sensor_r+sensor_l)<=20) : 
+        print("Taking a left turn\n...\n...\n...\n...\n...\n...\n...\n...\n...")
         flagl=2
         msg1.linear.x=0
         pub_.publish(msg1)
-        
-        bot_rot.target=90.0
-        bot_rot.main() #turn left
+        #target=90.0
+        #main() #turn left
+        #bot_rot.target=90.0
+        #bot_rot.main() #turn left
         
 def check_right() : #checks if wall is present on the right
     global sensor_l, sensor_c, sensor_r, flagl, flagf, flagr, msg1
     print("Inside checkright")
-    if sensor_r >= 9 :
+    #if sensor_r >= 9 :
+    if sensor_r>= 9 and sensor_r<=20:
         flagr=1  #wall on right
         msg1.linear.x=0
         pub_.publish(msg1)
+        target=180.0
+        main() #turn 180, dead end
+        #bot_rot.target=180.0
+        #bot_rot.main() #turn 180, dead end
         
-        bot_rot.target=180.0
-        bot_rot.main() #turn 180, dead end
-        
-    elif sensor_r>6 and sensor_r<8 : 
-        print("Taking a turn")
+    #elif sensor_r>6 and sensor_r<8 : 
+    elif sensor_r>30:
+        print("Taking a right turn\n...\n...\n...\n...\n...\n...\n...\n...\n...")
         flagr=2
         msg1.linear.x=0
         pub_.publish(msg1)
-        
-        bot_rot.target=-90.0
-        bot_rot.main() #turn right
+        target=-90.0
+        main() #turn right
+        #bot_rot.target=-90.0
+        #bot_rot.main() #turn right
         
 def check_front() : #checks if wall is present in front
      global sensor_l, sensor_c, sensor_r, flagl, flagf, flagr, msg1
@@ -85,7 +94,7 @@ def check_front() : #checks if wall is present in front
          #pidtune
     
     
-def main():
+def leftfollow():
     global pub_, active_, flagl, flagf, flagr, msg1
     
     rospy.init_node('follow_wall')
@@ -109,13 +118,13 @@ def main():
         flagl=flagf=flagr=0 
         
         msg1.angular.z=0.0
-        msg1.linear.x=0.35
+        msg1.linear.x=0.32
         pub_.publish(msg1)
         
         rate.sleep()
 
 if __name__ == '__main__':
-    main()
+    leftfollow()
     
 
 

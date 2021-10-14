@@ -43,11 +43,10 @@ def main():
     global pub, target, flag
     
     rospy.init_node('bot_rot')
-    
-    target=90.0
     sub = rospy.Subscriber ('/odom', Odometry, get_rotation)
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
-
+    
+    target=90.0
     print("Rotating by %5.2f..." %target)
     rate = rospy.Rate(20)
     
@@ -55,8 +54,8 @@ def main():
         if flag == 0 :
             rotate()
         elif flag == 1 :
-            print("Done")
             flag = -1
+            rospy.signal_shutdown("Done taking turn")
             
         rate.sleep()
 
