@@ -1,4 +1,4 @@
-! /usr/bin/env python
+#! /usr/bin/env python
 
 #true and false instead of flags, bot class, directly call rotate, using logerr,loginfo instead of print cz print is heavy
 
@@ -10,60 +10,61 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 import math
 
 class Bot:
-	yaw=flag=0
-	msg1=0
-	pub=None
-	'''def __init__(self):
+	def __init__(self):
 		self.yaw=0.0
-		self.flag=0.0
-		self.msg1=Twist()'''
+		self.flag=0
+		self.pub=None
+		self.msg1=Twist()
+		self.sub = rospy.Subscriber ('/odom', Odometry, self.get_rotation)
+		self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 	
-	def move():
+	def move(self):
 		#pid
-		global msg1, yaw, pub
-		msg1.linear.x=0.35
-		msg1.angular.z=0
-		pub.publish(msg1)
+		print("Velocity given")
+		self.msg1.linear.x=0.35
+		self.msg1.angular.z=0
+		self.pub.publish(self.msg1)
 		
-	def get_rotation(msg):
-		global yaw, flag
-		print("Yaw value: ", yaw ,"& flag=", flag)
-		flag = 1
+	def get_rotation(self,msg):
+		print("Yaw value: ", self.yaw ,"& flag=", self.flag)
+		self.flag = 1
 		orientation_q = msg.pose.pose.orientation
 		orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-		(_, _, yaw) = euler_from_quaternion (orientation_list)  #yaw=0.0 is north direction
+		(_, _, self.yaw) = euler_from_quaternion (orientation_list)  #yaw=0.0 is north direction
     
-	def rotate(targ):  
-		global msg1, yaw, flag, pub
-		rospy.init_node('bot_rot')
-		sub = rospy.Subscriber ('/odom', Odometry, get_rotation)
-		pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+	def rotate(self,targ):  
+		#global msg1, yaw, flag, pub
+		kp=0.95
 		#target=-90
 		print("Rotating to yaw %5.2f..." %targ)
-		print("Flag=",flag)
-		if flag==1 :
-			rotate(target) 
-		rate = rospy.Rate(20)
-		rospy.spin()
-    	while True :
-			flag=0
+		print("Flag=",self.flag)
+		if self.flag==1 :
+			rotate(targ) 
+		#rate = rospy.Rate(20)
+		#rospy.spin()
+		while True :
+			self.flag=0
 			target_rad = targ * math.pi/180
-			msg1.angular.z = kp * (target_rad-yaw)
-			yaw_deg = (yaw*180/math.pi)
+			self.msg1.angular.z = kp * (target_rad-self.yaw)
+			yaw_deg = (self.yaw*180/math.pi)
     
     		#if (((yaw_deg<= (targ-0.09)) and targ>=0) or ((yaw_deg>= (targ-0.09)) and targ<=0)) : #or (math.fabs(yaw_deg-targ) :
 			if (round(yaw_deg) != targ) :
-				pub.publish(msg1)
+				self.pub.publish(self.msg1)
 				print("target=%5.2f current:%5.2f" %(targ,yaw_deg))
         	
 			else :    
 				print("Robot successfully turned!")
 				print("Final yaw:", yaw_deg)
-				msg1.linear.x = 0
-				msg1.angular.z = 0
-				pub.publish(msg1)
+				self.msg1.linear.x = 0
+				self.msg1.angular.z = 0
+				self.pub.publish(self.msg1)
 				rospy.signal_shutdown("Shutting down....done!")
 				break 
 
-	if __name__ == '__main__':
-		rotate(90)
+if __name__ == '__main__':
+	rospy.init_node('bot_rot')
+	obj=Bot()
+	#obj.rotate(0)
+	obj.move()
+	rospy.spin()
