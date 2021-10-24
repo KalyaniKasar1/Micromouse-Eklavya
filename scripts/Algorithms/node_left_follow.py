@@ -65,68 +65,66 @@ def check_dir(n) : #checks which direction the turn should be taken to
         
     return dirs[dir]
             
-def delay(t,vel) : #to give a certain time period delay after every turn
+def delay(t) : #to give a certain time period delay after every turn
     print("Delaying............")
     t0 = rospy.Time.now().to_sec()
     t1=0
     while ((t1-t0)<t) :
         t1 = rospy.Time.now().to_sec()
-        obj.move(vel)
+        obj.move()
     
 def check_left() : #checks if wall is present on the left
     global sensor_l, sensor_r, sensor_c, l
     print("Inside checkleft....")
-    
+   
     if sensor_l>=2 and sensor_l <= 18 :
         #wall on left
         # check_front()
         return True
     elif sensor_l>18 :
-        delayvar=0.8
+        delayvar=0.6
         if (sensor_r<(sensor_l+1)) and (sensor_r>(sensor_l-1)) :
-            delayvar= sensor_c*0.05
-        delay(1.5+delayvar, 0.15)
+            delayvar= sensor_c*0.04
+        delay(1+delayvar)
         print("Taking a left turn\n...\n...\n...\n...\n...\n...\n...\n...\n...")
         target=check_dir(1)  # +1 passed means we want to take left turn, target means the target yaw value
         obj.rotate(target) #turn left
-        delay(2.5,0.3) #1.5
+        delay(1.2) #1.5
     
         
 def check_right() : #checks if wall is present on the right
     global sensor_r
     print("Inside checkright.....")
     if sensor_r>=2 and sensor_r <= 18 :
-    #if sensor_r>= 9 and sensor_r<=18:
-    # if sensor_r>=2 and sensor_r<=18 :
         #wall on right, so dead end
         print("Taking a U turn\n...\n...\n...\n...\n...\n...\n...\n...\n...")
         target=check_dir(2)
         obj.rotate(target) #turn 180
-        delay(2.5,0.3) #1.5
-
-    #elif sensor_r>6 and sensor_r<8 : 
-    # elif sensor_r>20:
+        delay(1) #1.5
     elif sensor_r>18 :
         # no wall on right
-        # print("Taking a right turn\n...\n...\n...\n...\n...\n...\n...\n...\n...")
-        delay(1.5,0.2)
+        delay(0.3)
+
+        # delayvar=0.4
+        # if (sensor_r<(sensor_l+1)) and (sensor_r>(sensor_l-1)) :
+        #     delayvar= sensor_c*0.03
+        # delay(1+delayvar)
+
         print("Taking a right turn\n...\n...\n...")
         target=check_dir(-1)  # -1 passed means we want to take right turn, target means the target yaw value
         obj.rotate(target) #turn right
-        delay(2.5,0.3) #1.5
+        delay(1.2) #1.5
 
 
 def check_front() : #checks if wall is present in front
     global sensor_c
-    l=0
     print("Inside checkfront......")
     if sensor_c>=2 and sensor_c <=9 :
         #wall in front
         # check_right()
         return True
-    # elif sensor_c >=18 :
     elif sensor_c>9 :
-        obj.move(0.38)
+        obj.move()
         pass #pidtune
         #obj.pid(regions)
     
@@ -136,7 +134,7 @@ def leftfollow():
     #srv = rospy.Service('wall_follower_switch', SetBool, wall_follower_switch)
     rate = rospy.Rate(50)   #orig rate for 20
     while not rospy.is_shutdown():
-        obj.move(0.38)
+        obj.move()
         #check_left()
         if (check_left()) : #if wall on left
             if (check_front()) : #if wall in front
@@ -144,20 +142,15 @@ def leftfollow():
                     print("Dead End!\nDead End!\nDead End!\nDead End!")
                     print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
                 else :
+                    # delay(0.2) #can comment out
                     print("Only right turn.\nOnly right turn.\nOnly right turn.\nOnly right turn.\n")
                     print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
             else :
                 print("Straight path.\nStraight path.\nStraight path.\nStraight path.\n")
                 print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
         else :
-            print("Left turn detected.\nLeft turn detected.\nLeft turn detected.\nLeft turn detected.\n")
-            print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
-
-        # flagl=flagf=flagr=0 
-        #obj.pid(sensor_l, sensor_c, sensor_r)
-        # msg1.angular.z=0.0
-        # msg1.linear.x=0.32
-        # pub_.publish(msg1)
+            delay(0.2)
+            check_left()
         rate.sleep()
 
 if __name__ == '__main__':

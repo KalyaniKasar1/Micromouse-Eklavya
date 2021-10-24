@@ -25,6 +25,7 @@ def clbk_laser(msg):
 
     if sensor_l != regions[4] and sensor_c != regions[2] and sensor_r != regions[0] :
         print("l: {} \t c: {} \t r: {}".format(regions[4], regions[2], regions[0],"\n\n\n\n\n"))
+        print(msg.ranges[0:360])
     
     sensor_l = regions[4]
     sensor_c = regions[2]
