@@ -17,11 +17,25 @@ class bot:
 		self.sub = rospy.Subscriber ('/odom', Odometry, self.clbk_odom)
 		self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 	
-	def move(self):
-		print("Velocity given")
-		self.msg1.linear.x=0.35
+	def move(self,vel):
+		# print("Velocity given")
+		self.msg1.linear.x=vel
 		self.msg1.angular.z=0
 		self.pub.publish(self.msg1)
+
+	# def getDir(self):
+	# 	if (-5<self.yaw) and (self.yaw<5): 
+	# 		return 2
+	# 	elif (85<self.yaw) and (self.yaw<95): 
+	# 		return 3
+	# 	elif (-85<self.yaw) and (self.yaw<-95): 
+	# 		return 1
+	# 	elif (-175<self.yaw) and (self.yaw<175): 
+	# 		return 0
+
+	def pid(self,l,c,r):
+		# pid
+		pass
 		
 	def clbk_odom(self,msg):
 		#print("Yaw value: ", self.yaw)
@@ -33,26 +47,28 @@ class bot:
 		kp=0.95
 		print("Rotating to yaw %5.2f..." %targ)
 		yaw_deg = (self.yaw*180/math.pi)
-		print("Yaw deg:", yaw_deg)
+		#print("Yaw deg:", yaw_deg)
 		while True :
 			target_rad = targ * math.pi/180
 			self.msg1.angular.z = kp * (target_rad-self.yaw)
+			#print("Velocity: ", self.msg1.angular.z )
 			self.msg1.linear.x = 0
 			yaw_deg = (self.yaw*180/math.pi)
 			if (round(yaw_deg) != targ) :
 				self.pub.publish(self.msg1)
-				print("target=%5.2f current:%5.2f" %(targ,yaw_deg))
+				#print("target=%5.2f current:%5.2f" %(targ,yaw_deg))
 			else :    
 				print("Robot successfully turned!")
 				print("Final yaw:", yaw_deg)
 				self.msg1.linear.x = 0
 				self.msg1.angular.z = 0
 				self.pub.publish(self.msg1)
-				rospy.signal_shutdown("Shutting down....done!")
+				#rospy.signal_shutdown("Shutting down....done!")
 				break
+		pass
 
 if __name__ == '__main__':
 	obj=bot()
 	# obj.move()
-	obj.rotate(0)
+	obj.rotate(90)
 	
