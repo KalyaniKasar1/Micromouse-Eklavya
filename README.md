@@ -147,9 +147,13 @@ Initial position of micromouse in the maze :
 Clips of micromouse when it's finding its way across the maze (using left follow rule):
 
 https://user-images.githubusercontent.com/82906801/138678394-f690bd37-aa28-47af-905f-3e6478ae43f2.mp4
+
 https://user-images.githubusercontent.com/82906801/138678441-d94f2ec3-b20e-4921-a819-7660af13ce92.mp4
+
 https://user-images.githubusercontent.com/82906801/138678506-2ebe6455-c000-4e4e-961d-40abc93d84a7.mp4
+
 https://user-images.githubusercontent.com/82906801/138678521-1ee71b9e-d742-4c2d-87e6-ca389d971233.mp4
+
 https://user-images.githubusercontent.com/82906801/138678528-f9bc81cb-02b8-40a2-8544-f401436a2008.mp4
 
 
