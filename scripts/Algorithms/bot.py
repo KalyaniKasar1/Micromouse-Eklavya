@@ -17,9 +17,9 @@ class bot:
 		self.sub = rospy.Subscriber ('/odom', Odometry, self.clbk_odom)
 		self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 	
-	def move(self,vel):
+	def move(self):
 		# print("Velocity given")
-		self.msg1.linear.x=vel
+		self.msg1.linear.x=0.35
 		self.msg1.angular.z=0
 		self.pub.publish(self.msg1)
 
