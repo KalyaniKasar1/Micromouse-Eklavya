@@ -18,16 +18,6 @@
     <color rgba="1.0 0.423529411765 0.0392156862745 1.0"/>
   </material>
   <material name="brown"> 
-  <gazebo>
-    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <odometryRate>20.0</odometryRate>
-      <robotBaseFrame>base_footprint</robotBaseFrame>
-    </plugin>
-  </gazebo>
-
     <color rgba="0.870588235294 0.811764705882 0.764705882353 1.0"/>
   </material>
   <material name="red">
@@ -46,13 +36,13 @@
   <gazebo reference="link_right_wheel">
     <material>Gazebo/Black</material>
   </gazebo>
-  <!-- <gazebo reference="link_front_wheel">
+  <gazebo reference="link_front_wheel">
     <material>Gazebo/Black</material>
   </gazebo>
    <gazebo reference="link_back_wheel">
     <material>Gazebo/Black</material>
   </gazebo>
-   -->
+  
     
   <link name="link_chassis">
     <!-- pose and inertial -->
@@ -65,16 +55,16 @@
     </inertial>
     
     <collision name="link_chassis_collision">
-      <origin rpy="0  0  0" xyz="0     0    0"/>
+      <origin rpy="0  0  0" xyz="0     0    0"/>  
       <geometry>
-        <box size="0.07 0.07 0.01"/>
+        <box size="0.07 0.07 0.02"/>
       </geometry>
     </collision>
     
     <visual name="link_chassis_visual">
-      <origin rpy="0  0  0" xyz="0     0    0"/>
+      <origin rpy="0  0  0" xyz="0     0    0"/>  
       <geometry>
-        <box size="0.07 0.07 0.01"/>
+        <box size="0.07 0.07 0.02"/>
       </geometry>
     </visual>
 </link>
@@ -84,21 +74,21 @@
   <link name="link_right_wheel">    
     <inertial>
       <mass value="0.2"/>
-      <origin rpy="0 1.5707 0" xyz="1 1 1"/>
+      <origin rpy="0 1.5707 0" xyz="0 0 0"/>
       <inertia ixx="2.3e-06" ixy="0" ixz="0" iyy="2.3e-06" iyz="0" izz="4.5e-06"/>
     </inertial>
     
     <collision name="link_right_wheel_collision">
       <origin rpy="0 1.5707 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.01" radius="0.0087"/>
+        <cylinder length="0.01" radius="0.015"/>
       </geometry>
     </collision>
     
     <visual name="link_right_wheel_visual">
-      <origin rpy="0 1.5707 0" xyz="1 1 1"/>
+      <origin rpy="0 1.5707 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.01" radius="0.0087"/>
+        <cylinder length="0.01" radius="0.015"/>
       </geometry>      
     </visual>
     
@@ -106,12 +96,13 @@
     
   <!--   Joint for right wheel  -->
   <joint name="joint_right_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.004  0    0"/>
+    <origin rpy="0 0 0" xyz="-0.04  0    0"/>
     <child link="link_right_wheel" />
     <parent link="link_chassis"/>
     <axis rpy="0 0 0" xyz="1 0 0"/>
     <limit effort="5" velocity="6"/>
-    <joint_properties damping="10000.0" friction="10000.0" />
+    <!-- <joint_properties damping="10000.0" friction="10000.0" /> -->
+    <joint_properties damping="10000.0" friction="0.0" />
   </joint>  
   <transmission name="right_wheel_trans">
      <type>transmission_interface/SimpleTransmission</type>
@@ -136,14 +127,14 @@
     <collision name="link_left_wheel_collision">
       <origin rpy="0 1.5707 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.01" radius="0.0087"/>
+        <cylinder length="0.01" radius="0.015"/>
       </geometry>
     </collision>
     
     <visual name="link_left_wheel_visual">
       <origin rpy="0 1.5707 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.01" radius="0.0087"/>
+        <cylinder length="0.01" radius="0.015"/>
       </geometry>      
     </visual>
     
@@ -151,12 +142,13 @@
     
   <!--   Joint for left wheel  -->
   <joint name="joint_left_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="0.004 0 0"/>
+    <origin rpy="0 0 0" xyz="0.04 0 0"/>
     <child link="link_left_wheel" />
     <parent link="link_chassis"/>
     <axis rpy="0 0 0" xyz="1 0 0"/>
     <limit effort="5" velocity="6"/>
-    <joint_properties damping="10000.0" friction="10000.0" />
+    <!-- <joint_properties damping="10000.0" friction="10000.0" /> -->
+    <joint_properties damping="10000.0" friction="0.0" />
   </joint> 
   <transmission name="left_wheel_trans">
      <type>transmission_interface/SimpleTransmission</type>
@@ -186,14 +178,14 @@
     <collision name="link_front_wheel_collision">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.01" radius="0.0087"/>
+        <cylinder length="0.01" radius="0.015"/>
       </geometry>
     </collision>
     
     <visual name="link_front_wheel_visual">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.01" radius="0.0087"/>
+        <cylinder length="0.01" radius="0.015"/>
       </geometry>      
     </visual>
     
@@ -201,12 +193,13 @@
     
   <!--   Joint for front wheel  -->
   <joint name="joint_front_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="0  -0.004    0"/>
+    <origin rpy="0 0 0" xyz="0  -0.04    0"/>
     <child link="link_front_wheel" />
     <parent link="link_chassis"/>
-    <axis rpy="0 0 0" xyz="1 0 0"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="5" velocity="6"/>
-    <joint_properties damping="10000.0" friction="10000.0" />
+    <!-- <joint_properties damping="10000.0" friction="10000.0" /> -->
+    <joint_properties damping="10000.0" friction="0.0" />
   </joint>  
   <transmission name="front_wheel_trans">
      <type>transmission_interface/SimpleTransmission</type>
@@ -232,14 +225,14 @@
     <collision name="link_back_wheel_collision">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.01" radius="0.0087"/>
+        <cylinder length="0.01" radius="0.015"/>
       </geometry>
     </collision>
     
     <visual name="link_back_wheel_visual">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.01" radius="0.0087"/>
+        <cylinder length="0.01" radius="0.015"/>
       </geometry>      
     </visual>
     
@@ -247,12 +240,13 @@
     
   <!--   Joint for back wheel  -->
   <joint name="joint_back_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="0  0.004    0"/>
+    <origin rpy="0 0 0" xyz="0  0.04    0"/>
     <child link="link_back_wheel" />
     <parent link="link_chassis"/>
-    <axis rpy="0 0 0" xyz="1 0 0"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="5" velocity="6"/>
-    <joint_properties damping="10000.0" friction="10000.0" />
+    <!-- <joint_properties damping="10000.0" friction="10000.0" /> -->
+    <joint_properties damping="10000.0" friction="0.0" />
   </joint>  
   <transmission name="back_wheel_trans">
      <type>transmission_interface/SimpleTransmission</type>
@@ -264,12 +258,8 @@
        <hardwareInterface>VelocityJointInterface</hardwareInterface>
      </joint>
   </transmission>
-     -->
 
 
-
-
-  
   <gazebo>
     <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
       <commandTopic>cmd_vel</commandTopic>
@@ -300,9 +290,6 @@
 -->
  
 
-
-
-
     <!-- 
     Adding a laser scan sensor to the robot 
   -->
@@ -330,7 +317,7 @@
   </link>
 
   <joint name="joint_sensor_laser" type="fixed">
-    <origin rpy="0  0  -1.57" xyz="0    0    0.01"/>
+    <origin rpy="0  0  -1.57" xyz="0    0    0.02"/>
     <parent link="link_chassis"/>
     <child link="sensor_laser"/>
   </joint>
