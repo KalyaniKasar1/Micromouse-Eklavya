@@ -21,9 +21,9 @@ regions=[]
 def clbk_laser(msg):
     global sensor_l, sensor_c, sensor_r, regions
     regions = [  #Dividing into 3 regions - 0-45, 46-135 and 136-180
-        round(100*min(max(msg.ranges[0:89]), 100)),   
-        round(100*min(max(msg.ranges[90:269]), 100)), 
-        round(100*min(max(msg.ranges[270:359]), 100))
+        round(100*min(mean(msg.ranges[0:89]), 100)),   
+        round(100*min(mean(msg.ranges[90:269]), 100)), 
+        round(100*min(mean(msg.ranges[270:359]), 100))
     ]
    
 
@@ -58,37 +58,37 @@ def check_dir(n) : #checks which direction the turn should be taken to
     return dirs[dir]
 
 
-# def delay(t) : #to give a certain time period delay after every turn
-#     print("Delaying............")
-#     t0 = rospy.Time.now().to_sec()
-#     t1=0
-#     while ((t1-t0)<t) :
-#         t1 = rospy.Time.now().to_sec()
-#         obj.move()
+def delay(t) : #to give a certain time period delay after every turn
+    print("Delaying............")
+    t0 = rospy.Time.now().to_sec()
+    t1=0
+    while ((t1-t0)<t) :
+        t1 = rospy.Time.now().to_sec()
+        obj.move()
 
 
 def check_left():
     global sensor_l, sensor_c, sensor_r
     print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
     print("Checking left wall...")
-    if sensor_l <= 80:
+    if sensor_l <= 8:
         print("Left wall found")
-        return True
+        return False
     else:
         print("Left wall not found")
-        return False
+        return True
     
 
 def check_right():
     global sensor_r
     print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
     print("Checking right wall...")
-    if sensor_r <= 12:
+    if sensor_r <= 8:
         print("Right wall found")
-        return True
+        return False
     else:
         print("Right wall not found")
-        return False
+        return True
 
 
 
@@ -96,13 +96,12 @@ def check_center():
     global sensor_c
     print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
     print("Checking center wall...")
-    if sensor_c <= 12:
+    if sensor_c <= 8:
         print("Center wall found")
-        return True
+        return False
     else:
         print("Center wall not found")
-        return False
-
+        return True
 
 def leftfollow():
     global sensor_l, sensor_c, sensor_r, l, dir
@@ -111,41 +110,47 @@ def leftfollow():
 
     while not rospy.is_shutdown():
         obj.move()
-        if check_left():
-            if check_center():
-                if check_right():
-                    #Reached dead end
-                    target = check_dir(2)  # When dir = 2, it will make a 180 degree turn 
-                    obj.rotate(target)
-                    print("Making a U turn...")
-                    obj.move()
-                    print("Moving...")
-                    print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
-                else:
-                    target = check_dir(-1) # When dir = -1, it will make a right turn
-                    obj.rotate(target)
-                    print("Making a right turn...")
-                    obj.move()
-                    print("Moving...")
-                    print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
-            else:
+        delay(2)
+        if check_left:
+            if l == 0:
+                target = check_dir(1)  # When dir = 1, it will make a left turn
+                delay(1.5)
+                obj.rotate(target)
+                print("Making a left turn...")
                 obj.move()
                 print("Moving...")
                 print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
-        else:
-            target = check_dir(1)  # When dir = 1, it will make a left turn
-            obj.rotate(target)
-            print("Making a left turn...")
+                l = 1
+
+        elif check_center:
             obj.move()
             print("Moving...")
             print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
+            l = 0
 
-        
+        elif check_right:
+            target = check_dir(-1) # When dir = -1, it will make a right turn
+            obj.rotate(target)
+            print("Making a right turn...")
+            obj.move()
+            print("Moving...")
+            print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
+            l = 0
+
+        else:
+            #Reached dead end
+            target = check_dir(2)  # When dir = 2, it will make a 180 degree turn 
+            obj.rotate(target)
+            print("Making a U turn...")
+            obj.move()
+            print("Moving...")
+            print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r,"\n"))
+            l = 0
+
+    
+
 
 
 if __name__ == '__main__':
     obj = bot()
     leftfollow()
-
-    
-

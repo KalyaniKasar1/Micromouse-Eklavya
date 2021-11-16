@@ -22,23 +22,29 @@ regions=[]
 def clbk_laser(msg):
     global sensor_l, sensor_c, sensor_r, regions
     # 720 / 5 = 144
+    # regions = [
+    #     round(100*min(mean(msg.ranges[0:71]), 100)),
+    #     round(100*min(mean(msg.ranges[72:143]), 100)),
+    #     round(100*min(mean(msg.ranges[144:215]), 100)),
+    #     round(100*min(mean(msg.ranges[216:287]), 100)),
+    #     round(100*min(mean(msg.ranges[288:359]), 100)),
+    # ]
+
     regions = [
-        round(100*min(mean(msg.ranges[0:71]), 100)),
-        round(100*min(mean(msg.ranges[72:143]), 100)),
-        round(100*min(mean(msg.ranges[144:215]), 100)),
-        round(100*min(mean(msg.ranges[216:287]), 100)),
-        round(100*min(mean(msg.ranges[288:359]), 100)),
+        round(100*min(max(msg.ranges[0:89]), 100)), 
+        round(100*min(max(msg.ranges[90:269]), 100)), 
+        round(100*min(max(msg.ranges[270:359]), 100))
     ]
     # rospy.loginfo(regions)
     
     #print("Inside callback......")
     #print("mean of range dists of leftex:", mean(msg.ranges[144:215]))
 
-    if sensor_l != regions[4] and sensor_c != regions[2] and sensor_r != regions[0] :
-        print("l: {} \t c: {} \t r: {}".format(regions[4], regions[2], regions[0],"\n\n\n\n\n"))
+    if sensor_l != regions[2] and sensor_c != regions[1] and sensor_r != regions[0] :
+        print("l: {} \t c: {} \t r: {}".format(regions[2], regions[1], regions[0],"\n\n\n\n\n"))
     
-    sensor_l = regions[4]
-    sensor_c = regions[2]
+    sensor_l = regions[2]
+    sensor_c = regions[1]
     sensor_r = regions[0]
 
     # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r))
@@ -90,18 +96,20 @@ def check_left() : #checks if wall is present on the left
         target=check_dir(1)  # +1 passed means we want to take left turn, target means the target yaw value
         obj.rotate(target) #turn left
         delay(1.2) #1.5
+
+
     
         
 def check_right() : #checks if wall is present on the right
     global sensor_r
     print("Inside checkright.....")
-    if sensor_r>=2 and sensor_r <= 18 :
+    if sensor_r<=12:
         #wall on right, so dead end
         print("Taking a U turn\n...\n...\n...\n...\n...\n...\n...\n...\n...")
         target=check_dir(2)
         obj.rotate(target) #turn 180
         delay(1) #1.5
-    elif sensor_r>18 :
+    elif sensor_r>12 :
         # no wall on right
         delay(0.3)
 
