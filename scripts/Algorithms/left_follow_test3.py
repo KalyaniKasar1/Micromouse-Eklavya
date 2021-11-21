@@ -23,7 +23,7 @@ def clbk_laser(msg):
     regions = [  #Dividing into 3 regions - 0-45, 46-135 and 136-180
         round(100*min(mean(msg.ranges[0:89]), 100)),   
         round(100*min(mean(msg.ranges[90:269]), 100)), 
-        round(100*min(mean(msg.ranges[270:359]), 100))
+        round(100*min(mean(msg.ranges[270:359]), 100)),
     ]
    
 
@@ -130,6 +130,7 @@ def leftfollow():
 
         elif check_right:
             target = check_dir(-1) # When dir = -1, it will make a right turn
+            delay(1.5)
             obj.rotate(target)
             print("Making a right turn...")
             obj.move()
