@@ -130,32 +130,32 @@ def leftfollow():
     while not rospy.is_shutdown():
         
 
-        # if check_left:
-        #     if l == 0:
-        #         print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-        #         obj.left()
-        #         print("Moving left")
-        #         l = 1
+        if check_left:
+            if l == 0:
+                print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+                obj.left()
+                print("Moving left")
+                l = 1
 
-        # elif check_center:
-        #     print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-        #     obj.forward()
-        #     print("Moving forward")
-        #     l = 0
+        elif check_center:
+            print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+            obj.forward()
+            print("Moving forward")
+            l = 0
 
-        # elif check_right:
-        #     print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-        #     obj.right()
-        #     print("Moving right")
-        #     l = 0
+        elif check_right:
+            print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+            obj.right()
+            print("Moving right")
+            l = 0
 
-        # else:
-        #     # Dead End
-        #     print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-        #     obj.back()
-        #     print("Moving back")
-        #     l = 0
-        obj.right()
+        else:
+            # Dead End
+            print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+            obj.back()
+            print("Moving back")
+            l = 0
+        
 
     
 
