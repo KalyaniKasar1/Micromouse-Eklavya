@@ -48,7 +48,7 @@ class bot:
 
 	def left(self):
 		print("Velocity given")
-		self.msg1.linear.y = 0.35
+		self.msg1.linear.x = 0.35
 		self.pub.publish(self.msg1)
 
 	
@@ -58,8 +58,7 @@ class bot:
 		
 if __name__ == '__main__':
 	obj=bot()
-	while(1):
-		obj.right()
+	obj.forward()
 
   # FYI, move() has to be called continuously for the bot to move 
 	# obj.rotate(90)

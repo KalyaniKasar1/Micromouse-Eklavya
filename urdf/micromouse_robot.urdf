@@ -49,7 +49,7 @@
     <pose>0 0 0.1 0 0 0</pose>
     
     <inertial>
-      <mass value="0"/>
+      <mass value="0.5"/>
       <origin rpy="0  0  0" xyz="0 0.01 0"/>
       <inertia ixx="0.00022083" ixy="0" ixz="0" iyy="0.00022083" iyz="0" izz="0.00040833"/>
     </inertial>
@@ -73,7 +73,7 @@
     
   <link name="link_right_wheel">    
     <inertial>
-      <mass value="0"/>
+      <mass value="0.2"/>
       <origin rpy="0 1.5707 0" xyz="0 0 0"/>
       <inertia ixx="2.3e-06" ixy="0" ixz="0" iyy="2.3e-06" iyz="0" izz="4.5e-06"/>
     </inertial>
@@ -119,7 +119,7 @@
     
   <link name="link_left_wheel">    
     <inertial>
-      <mass value="0"/>
+      <mass value="0.2"/>
       <origin rpy="0 1.5707 0" xyz="0 0 0"/>
       <inertia ixx="2.3e-06" ixy="0" ixz="0" iyy="2.3e-06" iyz="0" izz="4.5e-06"/>
     </inertial>
@@ -170,7 +170,7 @@
     
   <link name="link_front_wheel">    
     <inertial>
-      <mass value="0"/>
+      <mass value="0.2"/>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <inertia ixx="2.3e-06" ixy="0" ixz="0" iyy="2.3e-06" iyz="0" izz="4.5e-06"/>
     </inertial>
@@ -217,7 +217,7 @@
     
   <link name="link_back_wheel">    
     <inertial>
-      <mass value="0"/>
+      <mass value="0.2"/>
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <inertia ixx="2.3e-06" ixy="0" ixz="0" iyy="2.3e-06" iyz="0" izz="4.5e-06"/>
     </inertial>
@@ -286,7 +286,6 @@
       <robotBaseFrame>link_chassis</robotBaseFrame>
     </plugin>
   </gazebo>
-
 -->
  
 
@@ -296,7 +295,7 @@
   <link name="sensor_laser">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0" />
-      <mass value="0" />
+      <mass value="0.01" />
       <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02"/> 
     </inertial>
 

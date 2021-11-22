@@ -22,10 +22,10 @@ def clbk_laser(msg):
     global sensor_l, sensor_c, sensor_r, sensor_b, regions
     
     regions = [  
-        round(100*min(max(msg.ranges[315:360], msg.ranges[0:45]), 100)),   
-        round(100*min(max(msg.ranges[45:135]), 100)), 
-        round(100*min(max(msg.ranges[135:225]), 100)),
-        round(100*min(max(msg.ranges[225:315]), 100))
+        round(100*min(max(msg.ranges[345:359], msg.ranges[0:14]), 100)),   
+        round(100*min(max(msg.ranges[75:104]), 100)), 
+        round(100*min(max(msg.ranges[165:204]), 100)),
+        round(100*min(max(msg.ranges[255:284]), 100))
     ]
    
 
@@ -68,6 +68,31 @@ def clbk_laser(msg):
 #     while ((t1-t0)<t) :
 #         t1 = rospy.Time.now().to_sec()
 #         obj.move()
+
+
+def left_exchange():
+    global sensor_l, sensor_c, sensor_r, sensor_b, regions
+    sensor_c = sensor_r
+    sensor_l = sensor_c
+    sensor_b = sensor_l
+    sensor_r = sensor_b
+
+
+def right_exchange():
+    global sensor_l, sensor_c, sensor_r, sensor_b, regions
+    sensor_l = sensor_b
+    sensor_c = sensor_l
+    sensor_r = sensor_c
+    sensor_b = sensor_r
+    
+
+def deadend_exchange():
+    global sensor_l, sensor_c, sensor_r, sensor_b, regions
+    sensor_l = sensor_r
+    sensor_r = sensor_l
+    sensor_c = sensor_b
+    sensor_b = sensor_c
+
 
 
 # Checking for left wall
@@ -135,6 +160,7 @@ def leftfollow():
                 print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
                 obj.left()
                 print("Moving left")
+                left_exchange()
                 l = 1
 
         elif check_center:
@@ -147,6 +173,7 @@ def leftfollow():
             print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
             obj.right()
             print("Moving right")
+            right_exchange()
             l = 0
 
         else:
@@ -154,6 +181,7 @@ def leftfollow():
             print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
             obj.back()
             print("Moving back")
+            deadend_exchange()
             l = 0
         
 
