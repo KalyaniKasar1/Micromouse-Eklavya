@@ -30,25 +30,31 @@ class bot:
 
 	def forward(self):
 		print("Velocity given")
-		self.msg1.linear.y = -0.35
+		self.msg1.linear.y = -0.25
 		self.pub.publish(self.msg1)
 
 
 	def back(self):
 		print("Velocity given")
-		self.msg1.linear.y = 0.35
+		self.msg1.linear.y = 0.25
 		self.pub.publish(self.msg1)
 
 
 	def right(self):
 		print("Velocity given")
-		self.msg1.linear.x = -0.35
+		self.msg1.linear.x = -0.25
 		self.pub.publish(self.msg1)
 
 
 	def left(self):
 		print("Velocity given")
-		self.msg1.linear.x = 0.35
+		self.msg1.linear.x = 0.25
+		self.pub.publish(self.msg1)
+
+	
+	def slow_forward(self):
+		print("Velocity given")
+		self.msg1.linear.y = -0.05
 		self.pub.publish(self.msg1)
 
 	
@@ -58,7 +64,8 @@ class bot:
 		
 if __name__ == '__main__':
 	obj=bot()
-	obj.forward()
+	while(1):
+		obj.forward()
 
   # FYI, move() has to be called continuously for the bot to move 
 	# obj.rotate(90)

@@ -22,20 +22,20 @@ def clbk_laser(msg):
     global sensor_l, sensor_c, sensor_r, sensor_b, regions
     
     regions = [  
-        round(100*min(max(msg.ranges[345:359], msg.ranges[0:14]), 100)),   
+        round(100*min(max(max(msg.ranges[345:359]), max(msg.ranges[0:14])), 100)),   
         round(100*min(max(msg.ranges[75:104]), 100)), 
-        round(100*min(max(msg.ranges[165:204]), 100)),
+        round(100*min(max(msg.ranges[165:194]), 100)),
         round(100*min(max(msg.ranges[255:284]), 100))
     ]
    
 
     if sensor_l != regions[2] and sensor_c != regions[1] and sensor_r != regions[0] and sensor_b != regions[3]:
-        print("l: {} \t c: {} \t r: {} \t b: {}".format(regions[2], regions[1], regions[0], regions[3]))
+        print("l: {} \t c: {} \t r: {} \t b: {}".format(regions[3], regions[2], regions[1], regions[0]))
     
-    sensor_l = regions[2]
-    sensor_c = regions[1]
-    sensor_r = regions[0]
-    sensor_b = regions[3]
+    sensor_l = regions[3]
+    sensor_c = regions[2]
+    sensor_r = regions[1]
+    sensor_b = regions[0]
 
 
 # def check_dir(n) : #checks which direction the turn should be taken to 
@@ -94,13 +94,12 @@ def deadend_exchange():
     sensor_b = sensor_c
 
 
-
 # Checking for left wall
 def check_left():     
     global sensor_l, sensor_c, sensor_r, sensor_b
     print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))    
     print("Checking left wall...")
-    if sensor_l <= 8:
+    if sensor_l <= 12:
         print("Left wall found")
         return False
     else:
@@ -113,7 +112,7 @@ def check_right():
     global sensor_l, sensor_c, sensor_r, sensor_b
     print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
     print("Checking right wall...")
-    if sensor_r <= 8:
+    if sensor_r <= 12:
         print("Right wall found")
         return False
     else:
@@ -126,7 +125,7 @@ def check_center():
     global sensor_l, sensor_c, sensor_r, sensor_b
     print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
     print("Checking center wall...")
-    if sensor_c <= 8:
+    if sensor_c <= 12:
         print("Center wall found")
         return False
     else:
@@ -139,7 +138,7 @@ def check_back():
     global sensor_l, sensor_c, sensor_r, sensor_b
     print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
     print("Checking back wall...")
-    if sensor_b <= 8:
+    if sensor_b <= 12:
         print("Center wall found")
         return False
     else:
@@ -154,14 +153,19 @@ def leftfollow():
 
     while not rospy.is_shutdown():
         
-
+        # obj.forward()
         if check_left:
-            if l == 0:
-                print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+            # if l == 0:
+            prev_c = sensor_c
+            print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+            if abs(prev_c - sensor_c) >= 4:
                 obj.left()
                 print("Moving left")
                 left_exchange()
                 l = 1
+            else:
+                obj.slow_forward()
+            
 
         elif check_center:
             print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
