@@ -12,10 +12,7 @@ from bot import *
 import math
 
 sensor_l, sensor_c, sensor_r, sensor_b = 0, 0, 0, 0
-dir= 2  #by default direction is south facing (yaw=0), direction is chosen from the below list
-dirs=[180,-90,0,90]  # correspond to the north, west, south & east directions
 pub = None 
-l=0  #Becomes 1 if left turn has been taken...used to avoid immediate left turn after one left turn 
 regions=[]
 
 def clbk_laser(msg):
@@ -29,13 +26,13 @@ def clbk_laser(msg):
     ]
     # print(msg.ranges[0:359])
 
-    if sensor_l != regions[2] or sensor_c != regions[1] or sensor_r != regions[0] or sensor_b != regions[3]:
+    if sensor_l != regions[3] or sensor_c != regions[2] or sensor_r != regions[1] or sensor_b != regions[0]:
         print("l: {} \t c: {} \t r: {} \t b: {}".format(regions[3], regions[2], regions[1], regions[0]))
     
-    sensor_l = regions[2]
-    sensor_c = regions[1]
-    sensor_r = regions[0]
-    sensor_b = regions[3]
+    sensor_l = regions[3]
+    sensor_c = regions[2]
+    sensor_r = regions[1]
+    sensor_b = regions[0]
 
 
 def sensor_values():
