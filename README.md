@@ -164,7 +164,7 @@ https://user-images.githubusercontent.com/82906801/138678528-f9bc81cb-02b8-40a2-
 - [ ] Implement other algorithms
 - [ ] Work on making it remember the correct turns to be taken at every junction/node so that one final run can be made out of the 7 allowed in which it travels to the centre with the shortest possible path, by storing a text in text file.
 - [ ] Replace delay everywhere with other conditions
-- [ ] Make a final.launch such that all the necessary ROS nodes, RViz and Gazebo Simulation to solve the maze can be launched at once. 
+- [ ] Make a final.launch such that all the necessary __ROS nodes, RViz and Gazebo__ simulation to solve the maze can be launched at once. 
 - [ ] Learn about gzmaze so that a maze of any desired structure can be generated
 
 ## Contributors
