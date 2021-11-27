@@ -22,17 +22,52 @@ class bot:
 		# self.sub = rospy.Subscriber ('/odom', Odometry, self.clbk_odom)
 		self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 	
-	def move(self):
+	# def move(self):
+	# 	# print("Velocity given")
+	# 	self.msg1.linear.x=0.35
+	# 	self.msg1.angular.z=0
+	# 	self.pub.publish(self.msg1)
 
+	def forward(self):
 		# print("Velocity given")
-		self.msg1.linear.x=0.35       # +VE velocity to x means the bot will move to its left, else right
-		# self.msg1.linear.y=-0.35    # +VE velocity to y means the bot will move forward, else backward
-		# self.msg1.angular.x=0
-		self.msg1.angular.y=0
-		self.msg1.angular.z=0         # z velocity isnt required as it used for making the bot rotate
+		self.msg1.linear.y = -0.15
+		self.msg1.linear.x = 0
 		self.pub.publish(self.msg1)
 
 
+	def back(self):
+		# print("Velocity given")
+		self.msg1.linear.y = 0.15
+		self.msg1.linear.x = 0
+		self.pub.publish(self.msg1)
+
+
+	def right(self):
+		# print("Velocity given")
+		self.msg1.linear.x = -0.15
+		self.msg1.linear.y = 0
+		self.pub.publish(self.msg1)
+
+
+	def left(self):
+		# print("Velocity given")
+		self.msg1.linear.x = 0.15
+		self.msg1.linear.y = 0
+		self.pub.publish(self.msg1)
+
+	
+	def slow_forward(self):
+		# print("Velocity given")
+		self.msg1.linear.y = -0.05
+		self.msg1.linear.x = 0
+		self.pub.publish(self.msg1)
+
+	def stop(self):
+		self.msg1.linear.x = 0
+		self.msg1.linear.y = 0
+		self.pub.publish(self.msg1)
+
+	
 	def pid(self,l,c,r):
 		# pid
 		pass
@@ -40,6 +75,8 @@ class bot:
 if __name__ == '__main__':
 	obj=bot()
 	while(1):
-		obj.move()  # FYI, move() has to be called continuously for the bot to move 
+		obj.forward()
+
+  # FYI, move() has to be called continuously for the bot to move 
 	# obj.rotate(90)
 	
