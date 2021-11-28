@@ -137,10 +137,9 @@ rosrun pkg_techfest_imc node_left_follow.py
 * I had already obtained the urdf model of the micromouse and the model of the maze, which had to be  spawned in Gazebo. So I didn’t need to design them on my own.
 * Starting with the basics, the robot needs to move forward (maximum permitted speed is 0.4 m/s) and take left, right or U turns as per it needs. So for these `msg.linear.x` and `msg.angular.z` velocities are published to the cmd_vel topic of the bot in the form of `geometry_msgs/Twist` messages. 
 * Next, it needs to read and take in its surroundings in order to perceive what movements it has to make. For this, there is a laser scanner at the front of the bot that sends out 360 beams in an area spanning -90 to +90 degrees in front of it. Each degree of the region in front of the bot has 2 beams. These beams hit the walls of the maze and get reflected back to the bot; they are received by a receiver which can then perceive the distance at which the beam got reflected. Thus, 360 different values are obtained by the receiver in the form of `sensor_msgs/LaserScan` messages, which are then published to the `/my_mm_robot/laser/scan` topic; Here, `msg.ranges[ : ]` returns a list of values of the distance detected by each beam in the range selected by list slicing. The 0th beam is the rightmost beam, while the 359th beam is the leftmost, and all the beams released from the front of the micromouse (lets call it mmc, shall we?).
-* For determination of rotation, yaw of the mmc is obtained from its quaternion values, which in turn are obtained from the `/odom` topic in the form of Odometry messages from a callback function. These values are then converted to the Euler angles of yaw, roll and pitch, using a function from `tf.transformations` called `euler_from_quaternion`. Rotation of the mmc is done using the obtained yaw values, as given in the code inside `bot.py`, instead of using `time`, since it is very unreliable.   
+* For determination of rotation, yaw of the mmc is obtained from its quaternion values, which in turn are obtained from the `/odom` topic in the form of Odometry messages from a callback function. These values are then converted to the Euler angles of yaw, roll and pitch, using a function from `tf.transformations` called `euler_from_quaternion`. Rotation of the mmc is done using the obtained yaw values, as given in the code inside `bot.py`, instead of using `time`, since it is very unreliable. :confused:
 ```
 def clbk_odom(self,msg):
-		#print("Yaw value: ", self.yaw)
 		orientation_q = msg.pose.pose.orientation
 		orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
 		(_, _, self.yaw) = euler_from_quaternion (orientation_list)  #yaw=0.0 is north direction
@@ -148,24 +147,20 @@ def clbk_odom(self,msg):
 	def rotate(self,targ):  
 		kp=0.95  # kp will control the speed of rotation and increase the precision of turns 
 		print("Rotating to yaw %5.2f..." %targ)
-		yaw_deg = (self.yaw*180/math.pi)
-		#print("Yaw deg:", yaw_deg)  #yaw value in degree
 		while True :
 			target_rad = targ * math.pi/180
 			self.msg1.angular.z = kp * (target_rad-self.yaw)  #angular velocity published to the bot is proportional to the difference between its current and target values
 			#print("Velocity: ", self.msg1.angular.z )
 			self.msg1.linear.x = 0
-			yaw_deg = (self.yaw*180/math.pi)
+			yaw_deg = (self.yaw*180/math.pi)  # yaw value in degrees
 			if (round(yaw_deg) != targ) :
 				self.pub.publish(self.msg1)
 				#print("target=%5.2f current:%5.2f" %(targ,yaw_deg))
 			else :    
 				print("Robot successfully turned!")
-				print("Final yaw:", yaw_deg)
 				self.msg1.linear.x = 0
 				self.msg1.angular.z = 0
 				self.pub.publish(self.msg1)
-				#rospy.signal_shutdown("Shutting down....done!")
 				break
 		pass 
 ```
