@@ -173,15 +173,19 @@ Initial position of micromouse in the maze :
 
 Clips of micromouse when it's finding its way across the maze (using left follow rule):
 
-https://user-images.githubusercontent.com/82906801/138678394-f690bd37-aa28-47af-905f-3e6478ae43f2.mp4
+![mmc1](https://user-images.githubusercontent.com/82906801/143821040-57cae71d-dc25-4c8f-b7cf-944946c9d403.gif)
 
-https://user-images.githubusercontent.com/82906801/138678441-d94f2ec3-b20e-4921-a819-7660af13ce92.mp4
 
-https://user-images.githubusercontent.com/82906801/138678506-2ebe6455-c000-4e4e-961d-40abc93d84a7.mp4
+![mmc2](https://user-images.githubusercontent.com/82906801/143824166-1d9f94f4-f0a5-4344-9741-4da4cbf9de54.gif)
 
-https://user-images.githubusercontent.com/82906801/138678521-1ee71b9e-d742-4c2d-87e6-ca389d971233.mp4
 
-https://user-images.githubusercontent.com/82906801/138678528-f9bc81cb-02b8-40a2-8544-f401436a2008.mp4
+![mmc3](https://user-images.githubusercontent.com/82906801/143821734-1abbb372-cf53-41d1-a13c-8e89d35215e8.gif)
+
+
+![mmc4](https://user-images.githubusercontent.com/82906801/143823252-98296520-e10c-4737-b742-60f0c1af335d.gif)
+
+
+![mmc5](https://user-images.githubusercontent.com/82906801/143823844-e24b8e1c-ce4c-4675-8dde-1f313884458e.gif)
 
 
 ## Future Work
