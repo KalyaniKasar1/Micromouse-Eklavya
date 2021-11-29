@@ -11,9 +11,10 @@ from statistics import mean
 from bot import *
 import math
 
-sensor_l, sensor_c, sensor_r, sensor_b = 5000, 5000, 5000, 5000
-dir= 0  #by default internal direction is towards north, direction is chosen from the below list
-dirs=['N', 'E', 'S', 'W']  # correspond to the north, west, south & east, OR forward, right, back, left
+sensor_l, sensor_c, sensor_r, sensor_b = 0, 0, 0, 0
+l, c, r = 0, 0, 0
+# dir= 0  #by default internal direction is towards north, direction is chosen from the below list
+# dirs=['N', 'E', 'S', 'W']  # correspond to the north, west, south & east, OR forward, right, back, left
 pub = None 
 regions=[]
 prev_c = 0
@@ -30,41 +31,42 @@ def clbk_laser(msg):
     ]
     # print(msg.ranges[0:359])
 
-    if sensor_l != regions[3] or sensor_c != regions[2] or sensor_r != regions[1] or sensor_b != regions[0]:
-        print("l: {} \t c: {} \t r: {} \t b: {}".format(regions[3], regions[2], regions[1], regions[0]))
+    # if sensor_l != regions[3] or sensor_c != regions[2] or sensor_r != regions[1] or sensor_b != regions[0]:
+    #     print("l: {} \t c: {} \t r: {} \t b: {}".format(regions[3], regions[2], regions[1], regions[0]))
     
     sensor_l = regions[3]
     sensor_c = regions[2]
     sensor_r = regions[1]
     sensor_b = regions[0]
 
-    # if dir==1 : #bot is internally facing east
-    #     right_exchange
-    # elif dir==2 : #bot is internally facing south
-    #     deadend_exchange()
-    # elif dir==3 :  #bot is internally facing west
-    #     left_exchange
+    if bot.dir==1 : #bot is internally facing east
+        right_exchange()
+    elif bot.dir==2 : #bot is internally facing south
+        deadend_exchange()
+    elif bot.dir==3 :  #bot is internally facing west
+        left_exchange()
     
 
 def change_dir(n) : #changes direction as per turn to be taken
-    global dir, dirs
-    # dir = obj.getDir() #current
-    print("Dir is: ", dir)
+    # global dir, dirs
+    # print("Old Dir is: ", bot.dirs[bot.dir])
     if n==1:    # +1 is for clockwise, ie, right turn
-        if dir<3:
-            dir=dir+n
-        elif dir==3: 
-            dir=0
+        if bot.dir<3:
+            bot.dir=bot.dir+n
+        elif bot.dir==3: 
+            bot.dir=0
     elif n==-1: # -1 is for anti clockwise, ie, left turn
-        if dir>0:
-            dir=dir+n
-        elif dir==0:
-            dir=3 
+        if bot.dir>0:
+            bot.dir=bot.dir+n
+        elif bot.dir==0:
+            bot.dir=3 
     elif n==2:
-        if dir<=1:
-            dir=dir+2
+        if bot.dir<=1:
+            bot.dir=bot.dir+2
         else:
-            dir=dir-2
+            bot.dir=bot.dir-2
+
+    # print("New Dir is: ", bot.dirs[bot.dir])
     # return dirs[dir]
 
 def left_exchange():
@@ -80,54 +82,8 @@ def deadend_exchange():
     global sensor_l, sensor_c, sensor_r, sensor_b, regions
     sensor_l, sensor_c, sensor_r, sensor_b = sensor_r, sensor_b, sensor_l, sensor_c
 
-def check_left(): # Checking for left wall
-    global sensor_l, sensor_c, sensor_r, sensor_b
-    print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))    
-    # print("Checking left wall...")
-    # if sensor_l > 2 and sensor_l <= 9:
-    if sensor_l <= 9:
-        # print("Left not possi")
-        return False
-    else:
-        print("Left possi")
-        return True
-
-def check_right(): # Checking for right wall
-    global sensor_l, sensor_c, sensor_r, sensor_b
-    # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-    # print("Checking right wall...")
-    if sensor_r > 2 and sensor_r <= 9:
-        print("Right not possi")
-        return False
-    else:
-        # print("Right possi")
-        return True
-
-def check_center(): # Checking for center wall
-    # global sensor_l, sensor_c, sensor_r, sensor_b
-    # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-    # print("Checking center wall...")
-    # if sensor_c > 2 and sensor_c <= 9 :
-    if sensor_c <= 9 :
-        # print("Straight not possi")
-        return False
-    else:
-        # print("Straight possi")
-        return True
-
-def check_back(): # Checking for back wall
-    global sensor_l, sensor_c, sensor_r, sensor_b
-    print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-    print("Checking back wall...")
-    if sensor_b <= 12:
-        print("Center wall found")
-        return False
-    else:
-        print("Center wall not found")
-        return True
-
 def delay(t) : #to give a certain time period delay after every turn
-    print("Delaying............")
+    print("\nDelaying............\n")
     t0 = rospy.Time.now().to_sec()
     t1=0
     while ((t1-t0)<t) :
@@ -136,66 +92,126 @@ def delay(t) : #to give a certain time period delay after every turn
         # obj.slow_forward()
         obj.stop()
 
+def check_left(): # Checking for left wall
+    global sensor_l, sensor_c, sensor_r, sensor_b
+    # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))    
+    # print("Checking left wall...")
+    if sensor_l >= 5 and sensor_l <= 9:
+    # if sensor_l <= 9:
+        # print("Left not possi")
+        return False
+    else:
+        print("\nLeft possible!\n")
+        return True
+
+def check_right(): # Checking for right wall
+    global sensor_l, sensor_c, sensor_r, sensor_b
+    # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+    # print("Checking right wall...")
+    if sensor_r >= 5 and sensor_r <= 9:
+    # if sensor_l <= 9:
+        # print("Right not possi")
+        return False
+    else:
+        print("\nRight possible!\n")
+        return True
+
+def check_center(): # Checking for center wall
+    global sensor_l, sensor_c, sensor_r, sensor_b
+    # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+    # print("Checking center wall...")
+    if sensor_c >= 5 and sensor_c <= 9 :
+    # if sensor_c <= 9 :
+        # print("Straight not possi")
+        return False
+    else:
+        # print("Straight possi")
+        return True
 
 def leftfollow():
     # obj.forward()
     delay(5)
-    global sensor_l, sensor_c, sensor_r, dir, prev_c
+    global sensor_l, sensor_c, sensor_r, prev_c, l, c, r
     
     # while not rospy.is_shutdown():
     while(1) :
-        obj.forward()
+        # obj.forward()
+        obj.move()
         if check_left():  #left turn possible
-            
             prev_c = sensor_c
-            # print("Prev_c :", prev_c)
-            # print("Sensor_c outside while:", sensor_c)
-            # print("Difference outside while: ", prev_c - sensor_c)
+            while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                # print("Sensor_c inside while:", sensor_c)
+                # print("Difference inside while: ", prev_c - sensor_c)
+                obj.move()
+
+            delay(5)
+            change_dir(-1)
+            left_exchange()
+            print("\nExchanged left")
+            print("Turning left...\n")
+         
+            prev_c = sensor_c
+            while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                # print("Sensor_c inside while:", sensor_c)
+                # print("Difference inside while: ", prev_c - sensor_c)
+                obj.move()
             
             # obj.stop()
-            # delay(100)
-            while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 :
-            # while ((prev_c - sensor_c) <= 9) :
-                print("Sensor_c inside while:", sensor_c)
-                print("Difference inside while: ", prev_c - sensor_c)
-                # if prev_c-sensor_c==1 :
-                #     delay(5)
-                obj.forward()
-            obj.stop()
-            delay(5)
-            # change_dir(-1)
-            # left_exchange()
-            print("Exchanged left")
-            print("Turning left")
-            # while ((prev_c - sensor_c) <= 14) > 0 :
-            print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))    
-            while sensor_c >= 6 :
-                # print("Turning left")
-                print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))    
-                obj.left()
-            # obj.stop()
-            delay(5)
+            delay(1)
 
 
         elif check_center():
             # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-            # obj.forward()
+            obj.move()
             pass
             # print("Moving forward")
             
 
         elif check_right():
-            print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-            obj.right()
-            print("Moving right")
+            prev_c = sensor_c
+            while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                # print("Sensor_c inside while:", sensor_c)
+                # print("Difference inside while: ", prev_c - sensor_c)
+                obj.move()
+
+            delay(5)
+            change_dir(1)
             right_exchange()
+            print("\nExchanged right")
+            print("Turning right...\n")
+         
+            prev_c = sensor_c
+            while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                # print("Sensor_c inside while:", sensor_c)
+                # print("Difference inside while: ", prev_c - sensor_c)
+                obj.move()
+            
+            # obj.stop()
+            delay(1)
 
         else:
             # Dead End
-            print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-            obj.back()
-            print("Moving back")
+            # prev_c = sensor_c
+            # while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+            #     # print("Sensor_c inside while:", sensor_c)
+            #     # print("Difference inside while: ", prev_c - sensor_c)
+            #     obj.move()
+
+            # delay(5)
+            change_dir(2)
             deadend_exchange()
+            print("\nExchanged deadend")
+            print("U turning...\n")
+         
+            prev_c = sensor_c
+            while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                # print("Sensor_c inside while:", sensor_c)
+                # print("Difference inside while: ", prev_c - sensor_c)
+                obj.move()
+            
+            # obj.stop()
+            # delay(5)
+
 
     rospy.spin()
 
@@ -204,8 +220,8 @@ if __name__ == '__main__':
     sub = rospy.Subscriber('/my_mm_robot/laser/scan', LaserScan, clbk_laser)
     rate = rospy.Rate(50)
     leftfollow()
+    # change_dir(1)
     rospy.spin()
-    # leftfollow()
 
 # def delay(t) : #to give a certain time period delay after every turn
 #     print("Delaying............")
@@ -215,3 +231,14 @@ if __name__ == '__main__':
 #         t1 = rospy.Time.now().to_sec()
 #         # obj.move()
 #         obj.slow_forward()
+
+# def check_back(): # Checking for back wall
+#     global sensor_l, sensor_c, sensor_r, sensor_b
+#     print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+#     print("Checking back wall...")
+#     if sensor_b <= 12:
+#         print("Center wall found")
+#         return False
+#     else:
+#         print("Center wall not found")
+#         return True
