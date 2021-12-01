@@ -29,31 +29,38 @@ class bot:
 	# 	self.pub.publish(self.msg1)
 
 	def forward(self):
-		print("Velocity given")
+		#print("Velocity given")
 		self.msg1.linear.y = -0.25
 		self.pub.publish(self.msg1)
 
 
 	def back(self):
-		print("Velocity given")
+		#print("Velocity given")
 		self.msg1.linear.y = 0.25
 		self.pub.publish(self.msg1)
 
 
 	def right(self):
-		print("Velocity given")
+		#print("Velocity given")
 		self.msg1.linear.x = -0.25
 		self.pub.publish(self.msg1)
 
 
 	def left(self):
-		print("Velocity given")
+		#print("Velocity given")
 		self.msg1.linear.x = 0.25
+		self.pub.publish(self.msg1)
+
+
+	def stop(self):
+		#print("Velocity given")
+		self.msg1.linear.x = 0
+		self.msg1.linear.y = 0
 		self.pub.publish(self.msg1)
 
 	
 	def slow_forward(self):
-		print("Velocity given")
+		#print("Velocity given")
 		self.msg1.linear.y = -0.05
 		self.pub.publish(self.msg1)
 

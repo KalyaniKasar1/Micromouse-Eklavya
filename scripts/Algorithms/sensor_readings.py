@@ -14,6 +14,7 @@ import math
 sensor_l, sensor_c, sensor_r, sensor_b = 0, 0, 0, 0
 pub = None 
 regions=[]
+sensor_middle = 0
 
 def clbk_laser(msg):
     global sensor_l, sensor_c, sensor_r, sensor_b, regions
@@ -24,10 +25,12 @@ def clbk_laser(msg):
         round(100*min(max(msg.ranges[165:194]), 100)),
         round(100*min(max(msg.ranges[255:284]), 100))
     ]
+    sensor_middle = round(100*msg.ranges[180])
     # print(msg.ranges[0:359])
 
     if sensor_l != regions[3] or sensor_c != regions[2] or sensor_r != regions[1] or sensor_b != regions[0]:
         print("l: {} \t c: {} \t r: {} \t b: {}".format(regions[3], regions[2], regions[1], regions[0]))
+        print(sensor_middle)
     
     sensor_l = regions[3]
     sensor_c = regions[2]
