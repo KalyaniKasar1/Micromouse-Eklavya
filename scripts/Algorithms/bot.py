@@ -24,32 +24,32 @@ class bot:
 		# self.sub = rospy.Subscriber ('/odom', Odometry, self.clbk_odom)
 		self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 	
-	def move(self):
+	def move(self, d):
 		
 		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 		# -1- Take another argument for speed with which movement is to be done                                                       #
 		# -2- Take another argument which can have values :'slow' or 'fast' or 'medium', so we know how fast the bot has to be moved  #
 		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-		# if d=='R': 
-		# 	if bot.dir<3:
-		# 		d=bot.dirs[bot.dir+1]
-		# 	elif bot.dir==3: 
-		# 		d=bot.dirs[0]
-		# elif d=='L': 
-		# 	if bot.dir>0:
-		# 		d=bot.dirs[bot.dir-1]
-		# 	elif bot.dir==0:
-		# 		d=bot.dirs[3] 
-		# elif d=='S':
-		# 	if bot.dir<=1:
-		# 		d=bot.dirs[bot.dir+2]
-		# 	else:
-		# 		d=bot.dirs[bot.dir-2]
-		# elif d=='F':
-		# 	d=bot.dirs[bot.dir]
+		if d=='R': 
+			if bot.dir<3:
+				d=bot.dirs[bot.dir+1]
+			elif bot.dir==3: 
+				d=bot.dirs[0]
+		elif d=='L': 
+			if bot.dir>0:
+				d=bot.dirs[bot.dir-1]
+			elif bot.dir==0:
+				d=bot.dirs[3] 
+		elif d=='S':
+			if bot.dir<=1:
+				d=bot.dirs[bot.dir+2]
+			else:
+				d=bot.dirs[bot.dir-2]
+		elif d=='F':
+			d=bot.dirs[bot.dir]
 
-		d=bot.dirs[bot.dir]
+		# d=bot.dirs[bot.dir]
 
 		if d=='N':
 			self.north()
