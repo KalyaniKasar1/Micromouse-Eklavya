@@ -6,8 +6,6 @@
 ###
 
 
-#true and false instead of flags, using logerr,loginfo instead of print cz print is heavy
-
 import rospy
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
@@ -25,12 +23,6 @@ class bot:
 		self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 	
 	def move(self, d):
-		
-		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-		# -1- Take another argument for speed with which movement is to be done                                                       #
-		# -2- Take another argument which can have values :'slow' or 'fast' or 'medium', so we know how fast the bot has to be moved  #
-		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
 		if d=='R': 
 			if bot.dir<3:
 				d=bot.dirs[bot.dir+1]
@@ -52,64 +44,75 @@ class bot:
 		# d=bot.dirs[bot.dir]
 
 		if d=='N':
-			self.north()
+			self.north(0.1)
 		elif d=='S':
-			self.south()
+			self.south(0.1)
 		elif d=='E':
-			self.east()
+			self.east(0.1)
 		else :
-			self.west()
+			self.west(0.1)
 		
 
-	def north(self):
+	def slow_move(self, d):
+		if d=='R': 
+			if bot.dir<3:
+				d=bot.dirs[bot.dir+1]
+			elif bot.dir==3: 
+				d=bot.dirs[0]
+		elif d=='L': 
+			if bot.dir>0:
+				d=bot.dirs[bot.dir-1]
+			elif bot.dir==0:
+				d=bot.dirs[3] 
+		elif d=='S':
+			if bot.dir<=1:
+				d=bot.dirs[bot.dir+2]
+			else:
+				d=bot.dirs[bot.dir-2]
+		elif d=='F':
+			d=bot.dirs[bot.dir]
+
+
+		if d=='N':
+			self.north(0.08)
+		elif d=='S':
+			self.south(0.08)
+		elif d=='E':
+			self.east(0.08)
+		else :
+			self.west(0.08)
+
+	def north(self,v):  #v stands for velocity given
 		# print("Velocity given")
-		self.msg1.linear.y = -0.1
+		self.msg1.linear.y = (-1)*v
 		self.msg1.linear.x = 0
 		self.pub.publish(self.msg1)
 
-
-	def south(self):
+	def south(self,v):
 		# print("Velocity given")
-		self.msg1.linear.y = 0.1
+		self.msg1.linear.y = v
 		self.msg1.linear.x = 0
 		self.pub.publish(self.msg1)
 
-
-	def east(self):
+	def east(self,v):
 		# print("Velocity given")
-		self.msg1.linear.x = -0.1
+		self.msg1.linear.x = (-1)*v
 		self.msg1.linear.y = 0
 		self.pub.publish(self.msg1)
 
-
-	def west(self):
+	def west(self,v):
 		# print("Velocity given")
-		self.msg1.linear.x = 0.1
+		self.msg1.linear.x = v
 		self.msg1.linear.y = 0
 		self.pub.publish(self.msg1)
-
-	
-	# def slow_forward(self):
-	# 	# print("Velocity given")
-	# 	self.msg1.linear.y = -0.05
-	# 	self.msg1.linear.x = 0
-	# 	self.pub.publish(self.msg1)
 
 	def stop(self):
 		self.msg1.linear.x = 0
 		self.msg1.linear.y = 0
 		self.pub.publish(self.msg1)
-
-	
-	# def pid(self,l,c,r):
-	# 	# pid
-	# 	pass
 		
 if __name__ == '__main__':
 	obj=bot()
 	while(1):
 		obj.stop()
-
-  # FYI, move() has to be called continuously for the bot to move 
-	# obj.rotate(90)
 	
