@@ -105,7 +105,7 @@ def delay(t) : #to give a certain time period delay after every turn
 def check_left(): # Checking for left wall
     global sensor_l, sensor_c, sensor_r, sensor_b
     # print("Checking left wall...")
-    if sensor_l >= 5 and sensor_l <= 10:
+    if sensor_l >= 5 and sensor_l <= 11:
     # if sensor_l <= 9:
         # print("Left not possi")
         return False
@@ -118,7 +118,7 @@ def check_right(): # Checking for right wall
     global sensor_l, sensor_c, sensor_r, sensor_b
     # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
     # print("Checking right wall...")
-    if sensor_r >= 5 and sensor_r <= 10:
+    if sensor_r >= 5 and sensor_r <= 11:
     # if sensor_l <= 9:
         # print("Right not possi")
         return False
@@ -144,10 +144,10 @@ def recenter() :
     global sensor_l, sensor_r
     if sensor_l <= 7 :
         while sensor_l <= 7 :
-            obj.move('R')
+            obj.slow_move('R')
     elif sensor_r <= 7 :
         while sensor_r <= 7 :
-            obj.move('L')        
+            obj.slow_move('L')        
 
 def leftfollow():
     global sensor_l, sensor_c, sensor_r, prev_b, first_run, c
@@ -165,12 +165,12 @@ def leftfollow():
                 if check_left() :
                     prev_b = sensor_b
                     while ((sensor_b - prev_b) <= 9) and sensor_c>=10 :
-                        obj.move('F')
+                        obj.slow_move('F')
                     break
                 elif check_right() and (not check_center()) :    
                     prev_b = sensor_b
                     while ((sensor_b - prev_b) <= 9) and sensor_c>=10 :
-                        obj.move('F')
+                        obj.slow_move('F')
                     break
             obj.move('F')
         
