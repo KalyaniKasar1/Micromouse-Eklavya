@@ -119,33 +119,112 @@ def recenter():
         while sensor_r <= 7 :
             obj.slow_move('L')   
 
+# def check_end():
+#     end = False
+#     global sensor_l, sensor_c, sensor_r, sensor_b, dists
+#     if (sensor_c <= 28) and (sensor_c >= 24):
+#         if ((sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11) or ((sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1)  and sensor_l <= 11):
+#             if bot.dir==0 and (round(min(dists[224:226])*100) >=31 or round(min(dists[134:136])*100) >=31)  :  #when dir is N
+#                 end = True 
+#             elif bot.dir==1 and (round(min(dists[134:136])*100) >=31 or round(min(dists[44:46])*100) >=31)  :  #when dir is E
+#                 end = True
+#             elif bot.dir==2 and (round(min(dists[44:46])*100) >=31 or round(min(dists[314:316])*100) >=31)  :  #when dir is S
+#                 end = True
+#             elif bot.dir==3 and (round(min(dists[224:226])*100) >=31 or round(min(dists[314:316])*100) >=31)  :  #when dir is W
+#                 end = True
+#         # if (sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11 :
+#         #     if round(min(dists[220:230])*100) >=33 or round(min(dists[310:320])*100) >=33 or round(min(dists[130:140])*100) >=33 or round(min(dists[40:50])*100) >=33 :
+#         #         end = True 
+#         # elif (sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1)  and sensor_l <= 11 : 
+#         #     if round(max(dists[220:230])*100) >=33 or round(max(dists[310:320])*100) >=33 or round(max(dists[130:140])*100) >=33 or round(max(dists[40:50])*100) >=33 :
+#         #         end = True
+#     if end :
+#         print("Hurrayyy!")
+#         print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+#         delay(1)
+#         print("Required path: ", de)
+#         print("Path length : ", path)
+#     return end
+
 def check_end():
+    # delay(3)
     end = False
     global sensor_l, sensor_c, sensor_r, sensor_b, dists
+    le=0    
+    re=0
+    
+    # print("Holaaa")
+    print(dists[0],dists[180],dists[270])
+    print(round(min(dists[204:207])*100))
+    print(round(min(dists[244:247])*100))
     if (sensor_c <= 28) and (sensor_c >= 24):
-        if ((sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11) or ((sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1)  and sensor_l <= 11):
-            if bot.dir==0 and (round(min(dists[224:226])*100) >=31 or round(min(dists[134:136])*100) >=31)  :  #when dir is N
-                end = True 
-            elif bot.dir==1 and (round(min(dists[134:136])*100) >=31 or round(min(dists[44:46])*100) >=31)  :  #when dir is E
-                end = True
-            elif bot.dir==2 and (round(min(dists[44:46])*100) >=31 or round(min(dists[314:316])*100) >=31)  :  #when dir is S
-                end = True
-            elif bot.dir==3 and (round(min(dists[224:226])*100) >=31 or round(min(dists[314:316])*100) >=31)  :  #when dir is W
-                end = True
-        # if (sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11 :
-        #     if round(min(dists[220:230])*100) >=33 or round(min(dists[310:320])*100) >=33 or round(min(dists[130:140])*100) >=33 or round(min(dists[40:50])*100) >=33 :
+        # if ((sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11) or ((sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1)  and sensor_l <= 11):
+        #     if bot.dir==0 and (round(min(dists[224:226])*100) >=33 or round(min(dists[134:136])*100) >=33)  :  #when dir is N
         #         end = True 
-        # elif (sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1)  and sensor_l <= 11 : 
-        #     if round(max(dists[220:230])*100) >=33 or round(max(dists[310:320])*100) >=33 or round(max(dists[130:140])*100) >=33 or round(max(dists[40:50])*100) >=33 :
+        #     elif bot.dir==1 and (round(min(dists[134:136])*100) >=33 or round(min(dists[44:46])*100) >=33)  :  #when dir is E
         #         end = True
-    if end :
-        print("Hurrayyy!")
-        print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-        delay(1)
-        print("Required path: ", de)
-        print("Path length : ", path)
-    return end
+        #     elif bot.dir==2 and (round(min(dists[44:46])*100) >=33 or round(min(dists[314:316])*100) >=33)  :  #when dir is S
+        #         end = True
+        #     elif bot.dir==3 and (round(min(dists[224:226])*100) >=33 or round(min(dists[314:316])*100) >=33)  :  #when dir is W
+        #         end = True
 
+        if ((sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1) and sensor_l <= 11) :  
+            le=1  #means bot entered centre from left side
+        elif ((sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11) :
+            re=1  #means bot entered centre from right side
+        
+        if bot.dir==0:  # for speed=1.5, put 26 not 27
+            if le==1 and (round(min(dists[114:117])*100) >=27) and (round(min(dists[154:157])*100) >=27) :
+                print("\n\nDetected.")
+                print(round(min(dists[114:117])*100) >=27)
+                print(round(min(dists[154:157])*100) >=27)
+                end = True
+            elif re==1 and (round(min(dists[244:247])*100) >=27) and (round(min(dists[204:207])*100) >=27) : 
+                print("\n\nDetected.")
+                print(round(min(dists[244:247])*100) >=27)
+                print(round(min(dists[204:207])*100) >=27)
+                end = True
+        elif bot.dir==1:
+            if le==1 and (round(min(dists[24:27])*100) >=27) and (round(min(dists[64:67])*100) >=27) :
+                print("\n\nDetected.")
+                print(round(min(dists[24:27])*100) >=27)
+                print(round(min(dists[64:67])*100) >=27)
+                end = True
+            elif le==1 and (round(min(dists[154:157])*100) >=27) and (round(min(dists[114:117])*100) >=27) :
+                print("\n\nDetected.")
+                print(round(min(dists[154:157])*100) >=27)
+                print(round(min(dists[114:117])*100) >=27)
+                end = True
+        elif bot.dir==2:
+            if le==1 and (round(min(dists[294:297])*100) >=27) and (round(min(dists[334:337])*100) >=27) :
+                print("\n\nDetected.")
+                print(round(min(dists[294:297])*100) >=27)
+                print(round(min(dists[334:337])*100) >=27)
+                end = True
+            elif re==1 and (round(min(dists[64:67])*100) >=27) and (round(min(dists[24:27])*100) >=27) : 
+                print("\n\nDetected.")
+                print(round(min(dists[64:67])*100) >=27)
+                print(round(min(dists[24:27])*100) >=27)
+                end = True
+        elif bot.dir==3:
+            if le==1 and (round(min(dists[204:207])*100) >=27) and (round(min(dists[244:247])*100) >=27) :
+                print("Detected.")
+                print(round(min(dists[204:207])*100) >=27)
+                print(round(min(dists[244:247])*100) >=27)
+                end = True
+            elif re==1 and (round(min(dists[334:337])*100) >=27) and (round(min(dists[294:297])*100) >=27) : 
+                print("Detected.")
+                print(round(min(dists[334:337])*100) >=27)
+                print(round(min(dists[294:297])*100) >=27)
+                end = True
+
+        if end :
+            print("Hurrayyy!")
+            print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+            delay(1)
+            print("Required path: ", de)
+            print("Path length : ", path)
+        return end
 
 def simplifypath(de):#L S B L ~ L R  :4~2
     global angle, path
@@ -212,16 +291,16 @@ def leftfollow():
         if path>=4 and de[path-3]=='B':
             simplifypath(de)
 
-        while ((sensor_b - prev_b) <= 17.5) and sensor_c>=10 :
+        while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5
             if c >= 2 :
                 if check_left() :
                     prev_b = sensor_b
-                    while ((sensor_b - prev_b) <= 9) and sensor_c>=10 :
+                    while ((sensor_b - prev_b) <= 8) and sensor_c>=10 :  #for speed=0.1, 9
                         obj.slow_move('F')
                     break
                 elif check_right() and (not check_center()) :    
                     prev_b = sensor_b
-                    while ((sensor_b - prev_b) <= 9) and sensor_c>=10 :
+                    while ((sensor_b - prev_b) <= 8) and sensor_c>=10 :
                         obj.slow_move('F')
                     break
             obj.move('F')
@@ -255,7 +334,7 @@ def leftfollow():
             if check_right():
                 de.append('S')
                 print("Appended S")
-                print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+                # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
                 # delay(8)
                 path = path+1
             recenter()
