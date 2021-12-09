@@ -418,7 +418,8 @@ def backtrack():
 # final run    
 def final_run():
     global sensor_l, sensor_c, sensor_r, prev_b, first_run, c, path, final_dir
-    delay(50)
+    # delay(60)
+    delay(5)
     bot.dir=0
     path = open(r"path.txt","r")
     path_list=path.readline()
@@ -494,8 +495,8 @@ if __name__ == '__main__':
     obj = bot()
     sub = rospy.Subscriber('/my_mm_robot/laser/scan', LaserScan, clbk_laser)
     rate = rospy.Rate(50)
-    # left_follow()
-    # backtrack()
+    left_follow()
+    backtrack()
     final_run()
     # while(1):
     #     obj.move('F')
