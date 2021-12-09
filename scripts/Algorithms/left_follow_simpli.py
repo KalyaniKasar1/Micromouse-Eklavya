@@ -410,7 +410,7 @@ def backtrack():
             prev_b = sensor_b
     prev_b = sensor_b
     recenter()
-    while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5 & for speed=0.15, 16
+    while sensor_c>=9 : #for speed=0.1, 17.5 & for speed=0.15, 16
         obj.move('F')
     delay(1)
     print("Reached the start point")
