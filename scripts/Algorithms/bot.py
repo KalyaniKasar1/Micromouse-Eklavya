@@ -83,13 +83,13 @@ class bot:
 		# d=bot.dirs[bot.dir]
 
 		if d=='N':
-			self.north(0.08)
+			self.north(0.1)
 		elif d=='S':
-			self.south(0.08)
+			self.south(0.1)
 		elif d=='E':
-			self.east(0.08)
+			self.east(0.1)
 		else :
-			self.west(0.08)
+			self.west(0.1)
 	
 
 
