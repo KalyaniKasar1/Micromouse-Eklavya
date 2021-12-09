@@ -122,7 +122,8 @@ def recenter():
 
 def calibrate():
     global sensor_c, sensor_b, sensor_l, sensor_r
-    # if 
+    # if
+    # initial_dir= 
     pass
 
 def check_end():
@@ -259,7 +260,7 @@ def simplifypath(de):#L S B L ~ L R  :4~2
     
 def left_follow():
     global sensor_l, sensor_c, sensor_r, prev_b, first_run, c, path
-    delay(5)
+    delay(45)
     if first_run :
         prev_b = sensor_b
         first_run = False
@@ -479,6 +480,7 @@ def final_run():
             x=x+1
         
         else :
+            # print("Errrrrrr")
             prev_b = sensor_b
     prev_b = sensor_b
     while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5 & for speed=0.15, 16
@@ -492,8 +494,8 @@ if __name__ == '__main__':
     obj = bot()
     sub = rospy.Subscriber('/my_mm_robot/laser/scan', LaserScan, clbk_laser)
     rate = rospy.Rate(50)
-    # left_follow()
-    # backtrack()
+    left_follow()
+    backtrack()
     final_run()
     # while(1):
     #     obj.move('F')
