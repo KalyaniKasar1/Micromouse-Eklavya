@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-
+# Speed is 0.1
 # import ros stuff
 import rospy
 from sensor_msgs.msg import LaserScan
@@ -21,6 +21,7 @@ prev_b = 0
 angle=0
 path=1
 first_run = True
+final_dir = 0
 
 def clbk_laser(msg):
     global sensor_l, sensor_c, sensor_r, sensor_b, regions, dists
@@ -103,7 +104,7 @@ def check_right(): # Checking for right wall
 
 def check_center(): # Checking for center wall
     global sensor_l, sensor_c, sensor_r, sensor_b
-    if sensor_c >= 5 and sensor_c <= 11 :
+    if sensor_c >= 5 and sensor_c <= 11 :  # <=11 for speed=0.1, <=12 for speed=0.15
         # print("\nWall Ahead!\n")
         # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
         return False
@@ -117,113 +118,90 @@ def recenter():
             obj.slow_move('R')
     elif sensor_r <= 7 :
         while sensor_r <= 7 :
-            obj.slow_move('L')   
+            obj.slow_move('L')  
 
-# def check_end():
-#     end = False
-#     global sensor_l, sensor_c, sensor_r, sensor_b, dists
-#     if (sensor_c <= 28) and (sensor_c >= 24):
-#         if ((sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11) or ((sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1)  and sensor_l <= 11):
-#             if bot.dir==0 and (round(min(dists[224:226])*100) >=31 or round(min(dists[134:136])*100) >=31)  :  #when dir is N
-#                 end = True 
-#             elif bot.dir==1 and (round(min(dists[134:136])*100) >=31 or round(min(dists[44:46])*100) >=31)  :  #when dir is E
-#                 end = True
-#             elif bot.dir==2 and (round(min(dists[44:46])*100) >=31 or round(min(dists[314:316])*100) >=31)  :  #when dir is S
-#                 end = True
-#             elif bot.dir==3 and (round(min(dists[224:226])*100) >=31 or round(min(dists[314:316])*100) >=31)  :  #when dir is W
-#                 end = True
-#         # if (sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11 :
-#         #     if round(min(dists[220:230])*100) >=33 or round(min(dists[310:320])*100) >=33 or round(min(dists[130:140])*100) >=33 or round(min(dists[40:50])*100) >=33 :
-#         #         end = True 
-#         # elif (sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1)  and sensor_l <= 11 : 
-#         #     if round(max(dists[220:230])*100) >=33 or round(max(dists[310:320])*100) >=33 or round(max(dists[130:140])*100) >=33 or round(max(dists[40:50])*100) >=33 :
-#         #         end = True
-#     if end :
-#         print("Hurrayyy!")
-#         print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-#         delay(1)
-#         print("Required path: ", de)
-#         print("Path length : ", path)
-#     return end
+def calibrate():
+    global sensor_c, sensor_b, sensor_l, sensor_r
+    # if 
+    pass
 
 def check_end():
     # delay(3)
     end = False
-    global sensor_l, sensor_c, sensor_r, sensor_b, dists
+    global sensor_l, sensor_c, sensor_r, sensor_b, dists, final_dir
     le=0    
     re=0
-    
-    # print("Holaaa")
     print(dists[0],dists[180],dists[270])
-    print(round(min(dists[204:207])*100))
-    print(round(min(dists[244:247])*100))
-    if (sensor_c <= 28) and (sensor_c >= 24):
-        # if ((sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11) or ((sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1)  and sensor_l <= 11):
-        #     if bot.dir==0 and (round(min(dists[224:226])*100) >=33 or round(min(dists[134:136])*100) >=33)  :  #when dir is N
-        #         end = True 
-        #     elif bot.dir==1 and (round(min(dists[134:136])*100) >=33 or round(min(dists[44:46])*100) >=33)  :  #when dir is E
-        #         end = True
-        #     elif bot.dir==2 and (round(min(dists[44:46])*100) >=33 or round(min(dists[314:316])*100) >=33)  :  #when dir is S
-        #         end = True
-        #     elif bot.dir==3 and (round(min(dists[224:226])*100) >=33 or round(min(dists[314:316])*100) >=33)  :  #when dir is W
-        #         end = True
+    print(round(min(dists[114:117])*100) >=26)
+    print(round(min(dists[154:157])*100) >=26)
+    print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b), "\n")    
 
-        if ((sensor_c == sensor_r or sensor_c == sensor_r+1 or sensor_c == sensor_r-1) and sensor_l <= 11) :  
+    if (sensor_c <= 29) and (sensor_c >= 24):
+        if (sensor_c <= sensor_r+2 and sensor_c >= sensor_r-2) and sensor_l <= 11 :  
             le=1  #means bot entered centre from left side
-        elif ((sensor_c == sensor_l or sensor_c == sensor_l+1 or sensor_c == sensor_l-1) and sensor_r <= 11) :
+        elif (sensor_c <= sensor_l+2 and sensor_c >= sensor_l-2) and sensor_r <= 11 :
             re=1  #means bot entered centre from right side
         
-        if bot.dir==0:  # for speed=1.5, put 26 not 27
-            if le==1 and (round(min(dists[114:117])*100) >=27) and (round(min(dists[154:157])*100) >=27) :
-                print("\n\nDetected.")
-                print(round(min(dists[114:117])*100) >=27)
-                print(round(min(dists[154:157])*100) >=27)
+        if bot.dir==0:  # for speed=0.1, >=27 & for speed=0.15, >=26 
+            if le==1 and (round(min(dists[114:117])*100) >=26) and (round(min(dists[154:157])*100) >=26) :
+                # print("\n\nDetected.")
+                # print(round(min(dists[114:117])*100) >=26)
+                # print(round(min(dists[154:157])*100) >=26)
                 end = True
-            elif re==1 and (round(min(dists[244:247])*100) >=27) and (round(min(dists[204:207])*100) >=27) : 
-                print("\n\nDetected.")
-                print(round(min(dists[244:247])*100) >=27)
-                print(round(min(dists[204:207])*100) >=27)
+            elif re==1 and (round(min(dists[244:247])*100) >=26) and (round(min(dists[204:207])*100) >=26) : 
+                # print("\n\nDetected.")
+                # print(round(min(dists[244:247])*100) >=26)
+                # print(round(min(dists[204:207])*100) >=26)
                 end = True
         elif bot.dir==1:
-            if le==1 and (round(min(dists[24:27])*100) >=27) and (round(min(dists[64:67])*100) >=27) :
-                print("\n\nDetected.")
-                print(round(min(dists[24:27])*100) >=27)
-                print(round(min(dists[64:67])*100) >=27)
+            if le==1 and (round(min(dists[24:27])*100) >=26) and (round(min(dists[64:67])*100) >=26) :
+                # print("\n\nDetected.")
+                # print(round(min(dists[24:27])*100) >=26)
+                # print(round(min(dists[64:67])*100) >=26)
                 end = True
-            elif le==1 and (round(min(dists[154:157])*100) >=27) and (round(min(dists[114:117])*100) >=27) :
-                print("\n\nDetected.")
-                print(round(min(dists[154:157])*100) >=27)
-                print(round(min(dists[114:117])*100) >=27)
+            elif le==1 and (round(min(dists[154:157])*100) >=26) and (round(min(dists[114:117])*100) >=26) :
+                # print("\n\nDetected.")
+                # print(round(min(dists[154:157])*100) >=26)
+                # print(round(min(dists[114:117])*100) >=26)
                 end = True
         elif bot.dir==2:
-            if le==1 and (round(min(dists[294:297])*100) >=27) and (round(min(dists[334:337])*100) >=27) :
-                print("\n\nDetected.")
-                print(round(min(dists[294:297])*100) >=27)
-                print(round(min(dists[334:337])*100) >=27)
+            if le==1 and (round(min(dists[294:297])*100) >=26) and (round(min(dists[334:337])*100) >=26) :
+                # print("\n\nDetected.")
+                # print(round(min(dists[294:297])*100) >=26)
+                # print(round(min(dists[334:337])*100) >=26)
                 end = True
-            elif re==1 and (round(min(dists[64:67])*100) >=27) and (round(min(dists[24:27])*100) >=27) : 
-                print("\n\nDetected.")
-                print(round(min(dists[64:67])*100) >=27)
-                print(round(min(dists[24:27])*100) >=27)
+            elif re==1 and (round(min(dists[64:67])*100) >=26) and (round(min(dists[24:27])*100) >=26) : 
+                # print("\n\nDetected.")
+                # print(round(min(dists[64:67])*100) >=26)
+                # print(round(min(dists[24:27])*100) >=26)
                 end = True
         elif bot.dir==3:
-            if le==1 and (round(min(dists[204:207])*100) >=27) and (round(min(dists[244:247])*100) >=27) :
-                print("Detected.")
-                print(round(min(dists[204:207])*100) >=27)
-                print(round(min(dists[244:247])*100) >=27)
+            if le==1 and (round(min(dists[204:207])*100) >=26) and (round(min(dists[244:247])*100) >=26) :
+                # print("Detected.")
+                # print(round(min(dists[204:207])*100) >=26)
+                # print(round(min(dists[244:247])*100) >=26)
                 end = True
-            elif re==1 and (round(min(dists[334:337])*100) >=27) and (round(min(dists[294:297])*100) >=27) : 
-                print("Detected.")
-                print(round(min(dists[334:337])*100) >=27)
-                print(round(min(dists[294:297])*100) >=27)
+            elif re==1 and (round(min(dists[334:337])*100) >=26) and (round(min(dists[294:297])*100) >=26) : 
+                # print("Detected.")
+                # print(round(min(dists[334:337])*100) >=26)
+                # print(round(min(dists[294:297])*100) >=26)
                 end = True
 
         if end :
             print("Hurrayyy!")
             print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-            delay(1)
+            delay(2)
             print("Required path: ", de)
             print("Path length : ", path)
+            path_list=list(collections.deque(de))
+            path_list="".join(path_list)
+            pathf = open("path.txt","w")
+            # pathf = open("path.txt","w+")
+            pathf.write(path_list)
+            pathf.close()
+            print("\n\n")
+            final_dir=bot.dir
+
         return end
 
 def simplifypath(de):#L S B L ~ L R  :4~2
@@ -279,7 +257,7 @@ def simplifypath(de):#L S B L ~ L R  :4~2
     print("Refined Path length : ", path)
     # delay(5)
     
-def leftfollow():
+def left_follow():
     global sensor_l, sensor_c, sensor_r, prev_b, first_run, c, path
     delay(5)
     if first_run :
@@ -291,11 +269,11 @@ def leftfollow():
         if path>=4 and de[path-3]=='B':
             simplifypath(de)
 
-        while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5
+        while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5 & for speed=0.15, 16
             if c >= 2 :
                 if check_left() :
                     prev_b = sensor_b
-                    while ((sensor_b - prev_b) <= 8) and sensor_c>=10 :  #for speed=0.1, 9
+                    while ((sensor_b - prev_b) <= 8) and sensor_c>=10 :  #for speed=0.1, 9 & for speed=0.15, 8
                         obj.slow_move('F')
                     break
                 elif check_right() and (not check_center()) :    
@@ -306,7 +284,7 @@ def leftfollow():
             obj.move('F')
         
         recenter()
-        print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+        # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
         print("Travelled one block\n")
         # delay(5)
 
@@ -316,7 +294,6 @@ def leftfollow():
         if check_left():  #Left turn possible
             change_dir(-1)
             left_exchange()
-            # print("Exchanged left")
             print("Turning left...")
             # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b), "\n")    
             prev_b = sensor_b
@@ -327,11 +304,9 @@ def leftfollow():
 
         elif check_center():  #Straight path
             # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-            # obj.move('F')
             prev_b = sensor_b
             c = c + 1
-            # straight=1
-            if check_right():
+            if check_right() and sensor_c>=20:
                 de.append('S')
                 print("Appended S")
                 # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
@@ -342,12 +317,10 @@ def leftfollow():
         elif check_right():  #Right turn possible
             change_dir(1)
             right_exchange()
-            # print("Exchanged right")
             print("Turning right...")
             # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b), "\n")    
             prev_b = sensor_b
             c = 0
-            # right=1
             de.append('R')
             print("Appended R")
             path = path+1
@@ -355,20 +328,174 @@ def leftfollow():
         else:  # Dead end
             change_dir(2)
             deadend_exchange()
-            # print("Exchanged deadend")
             print("U turning...\n")
             prev_b = sensor_b
             c = c + 1
             de.append('B')
+            print("Appended B")
             path= path+1  
             recenter()
+
+# backtracking    
+def backtrack():
+    global sensor_l, sensor_c, sensor_r, prev_b, first_run, c, path, final_dir
+    delay(5)
+
+    bot.dir=0
+    pathf = open(r"path.txt","r")
+    path_list=pathf.readline()
+    pathf.close()
+    print(path_list)
+    first_run = True
+    print("Backtracking...\n..")
+    # path_list='LRSLSRSRLSLLRLRRL'
+    bot.dir=final_dir
+    change_dir(2)
+    
+    if first_run :
+        prev_b = sensor_b
+        first_run = False
+    # path=1
+    x=len(path_list)-1
+    # for i in path_list :
+    while x>=0 :
+        # print(path_list[x],end="-")
+        while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5 & for speed=0.15, 16
+            if c >= 2 :
+                if check_left() :
+                    prev_b = sensor_b
+                    while ((sensor_b - prev_b) <= 8) and sensor_c>=10 :  #for speed=0.1, 9 & for speed=0.15, 8
+                        obj.slow_move('F')
+                    break
+                elif check_right() and (not check_center()) :    
+                    prev_b = sensor_b
+                    while ((sensor_b - prev_b) <= 8) and sensor_c>=10 :
+                        obj.slow_move('F')
+                    break
+            obj.move('F')
+        
+        recenter()
+        # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+        # print("Travelled one block\n")
+
+        if path_list[x]=='R' and check_left():  #Left turn possible
+            change_dir(-1)
+            left_exchange()
+            print("Turning left...")
+            # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b), "\n")    
+            prev_b = sensor_b
+            c = 0
+            x=x-1
+
+
+        elif path_list[x]=='S' and sensor_c>=18 and (check_left or check_right):  #Straight path
+            print("Going straight...")
+            # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+            prev_b = sensor_b
+            c = c + 1
+            recenter()
+            x=x-1
+
+        elif path_list[x]=='L' and check_right():  #Right turn possible
+            change_dir(1)
+            right_exchange()
+            print("Turning right...")
+            # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b), "\n")    
+            prev_b = sensor_b
+            c = 0
+            x=x-1
+        
+        else :
+            prev_b = sensor_b
+    prev_b = sensor_b
+    recenter()
+    while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5 & for speed=0.15, 16
+        obj.move('F')
+    delay(1)
+    print("Reached the start point")
+
+# final run    
+def final_run():
+    global sensor_l, sensor_c, sensor_r, prev_b, first_run, c, path, final_dir
+    delay(5)
+    bot.dir=0
+    path = open(r"path.txt","r")
+    path_list=path.readline()
+    path.close()
+    print(path_list)
+    # path_list='LRSLSRSRLSLLRLRRL'
+    first_run = True
+    if first_run :
+        prev_b = sensor_b
+        first_run = False
+    # path=1
+    x=0
+    # for i in path_list :
+    while x<len(path_list) :
+        # print(path_list[x],end="-")
+        while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5 & for speed=0.15, 16
+            if c >= 2 :
+                if check_left() :
+                    prev_b = sensor_b
+                    while ((sensor_b - prev_b) <= 8) and sensor_c>=10 :  #for speed=0.1, 9 & for speed=0.15, 8
+                        obj.slow_move('F')
+                    break
+                elif check_right() and (not check_center()) :    
+                    prev_b = sensor_b
+                    while ((sensor_b - prev_b) <= 8) and sensor_c>=10 :
+                        obj.slow_move('F')
+                    break
+            obj.move('F')
+        
+        recenter()
+        # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+        # print("Travelled one block\n")
+
+        if path_list[x]=='L' and check_left():  #Left turn possible
+            change_dir(-1)
+            left_exchange()
+            print("Turning left...")
+            # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b), "\n")    
+            prev_b = sensor_b
+            c = 0
+            x=x+1
+
+
+        elif path_list[x]=='S' and sensor_c>=18 and (check_left or check_right):  #Straight path
+            print("Going straight...")
+            # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+            prev_b = sensor_b
+            c = c + 1
+            recenter()
+            x=x+1
+
+        elif path_list[x]=='R' and check_right():  #Right turn possible
+            change_dir(1)
+            right_exchange()
+            print("Turning right...")
+            # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b), "\n")    
+            prev_b = sensor_b
+            c = 0
+            x=x+1
+        
+        else :
+            prev_b = sensor_b
+    prev_b = sensor_b
+    while ((sensor_b - prev_b) <= 16) and sensor_c>=10 : #for speed=0.1, 17.5 & for speed=0.15, 16
+        obj.move('F')
+    delay(1)
+    print("\n\n")
+    # final_dir=bot.dir
+
 
 if __name__ == '__main__':
     obj = bot()
     sub = rospy.Subscriber('/my_mm_robot/laser/scan', LaserScan, clbk_laser)
     rate = rospy.Rate(50)
-    leftfollow()
-    # simplifypath(de)   
-    # change_dir(1)
+    # left_follow()
+    # backtrack()
+    final_run()
+    # while(1):
+    #     obj.move('F')
     rospy.spin()
 
