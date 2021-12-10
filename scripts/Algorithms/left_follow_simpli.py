@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # Speed is 0.1
 # import ros stuff
 import rospy
