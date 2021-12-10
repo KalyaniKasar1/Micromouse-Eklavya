@@ -1,43 +1,53 @@
 #! /usr/bin/env python
 
+# import ros stuff
 import rospy
+from sensor_msgs.msg import LaserScan
+from geometry_msgs.msg import Twist
+from nav_msgs.msg import Odometry
+from tf import transformations
+from std_srvs.srv import *
 from statistics import mean
 from bot import *
-from sensor_msgs.msg import LaserScan
+import math
 
-sensor_l, sensor_c, sensor_r = 0, 0, 0
+sensor_l, sensor_c, sensor_r, sensor_b = 0, 0, 0, 0
+pub = None 
 regions=[]
 
 def clbk_laser(msg):
-    global sensor_l, sensor_c, sensor_r, regions
-    # 720 / 5 = 144
-    regions = [
-        round(100*min(mean(msg.ranges[0:71]), 100)),
-        round(100*min(mean(msg.ranges[72:143]), 100)),
-        round(100*min(mean(msg.ranges[144:215]), 100)),
-        round(100*min(mean(msg.ranges[216:287]), 100)),
-        round(100*min(mean(msg.ranges[288:359]), 100)),
+    global sensor_l, sensor_c, sensor_r, sensor_b, regions
+    
+    regions = [  
+        round(100*min(max(max(msg.ranges[345:359]), max(msg.ranges[0:14])), 100)),   
+        round(100*min(max(msg.ranges[75:104]), 100)), 
+        round(100*min(max(msg.ranges[165:194]), 100)),
+        round(100*min(max(msg.ranges[255:284]), 100))
     ]
-    # rospy.loginfo(regions)
-    
-    #print("Inside callback......")
-    #print("mean of range dists of leftex:", mean(msg.ranges[144:215]))
+    # print(msg.ranges[0:359])
 
-    if sensor_l != regions[4] and sensor_c != regions[2] and sensor_r != regions[0] :
-        print("l: {} \t c: {} \t r: {}".format(regions[4], regions[2], regions[0],"\n\n\n\n\n"))
-        print(msg.ranges[0:360])
+    if sensor_l != regions[3] or sensor_c != regions[2] or sensor_r != regions[1] or sensor_b != regions[0]:
+        print("l: {} \t c: {} \t r: {} \t b: {}".format(regions[3], regions[2], regions[1], regions[0]))
     
-    sensor_l = regions[4]
+    sensor_l = regions[3]
     sensor_c = regions[2]
-    sensor_r = regions[0]
+    sensor_r = regions[1]
+    sensor_b = regions[0]
 
 
-def main():
+def sensor_values():
+    global sensor_l, sensor_c, sensor_r, sensor_b
     rospy.init_node('reading_laser')
-    
     sub = rospy.Subscriber('/my_mm_robot/laser/scan', LaserScan, clbk_laser)
-    
-    rospy.spin()
+    rate = rospy.Rate(50)
+
+    while not rospy.is_shutdown():
+        # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+
+        # if check_left():
+        #     left_exchange()
+        pass
+
 
 if __name__ == '__main__':
-    main()
+    sensor_values()

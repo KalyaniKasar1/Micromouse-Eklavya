@@ -18,7 +18,7 @@ l, c, r = 0, 0, 0
 pub = None 
 regions=[]
 prev_c = 0
-first_clbk = True
+first_run = True
 
 def clbk_laser(msg):
     global sensor_l, sensor_c, sensor_r, sensor_b, regions
@@ -96,11 +96,11 @@ def check_left(): # Checking for left wall
     global sensor_l, sensor_c, sensor_r, sensor_b
     # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))    
     # print("Checking left wall...")
-    if sensor_r >= 5 and sensor_r <= 10 :
+    if sensor_l >= 5 and sensor_l <= 9:
     # if sensor_l <= 9:
         # print("Left not possi")
         return False
-    elif (sensor_l+sensor_r)>18 :
+    else:
         print("\nLeft possible!\n")
         return True
 
@@ -108,11 +108,11 @@ def check_right(): # Checking for right wall
     global sensor_l, sensor_c, sensor_r, sensor_b
     # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
     # print("Checking right wall...")
-    if sensor_r >= 5 and sensor_r <= 10 :
+    if sensor_r >= 5 and sensor_r <= 9:
     # if sensor_l <= 9:
         # print("Right not possi")
         return False
-    elif (sensor_l+sensor_r)>18 :
+    else:
         print("\nRight possible!\n")
         return True
 
@@ -120,7 +120,7 @@ def check_center(): # Checking for center wall
     global sensor_l, sensor_c, sensor_r, sensor_b
     # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
     # print("Checking center wall...")
-    if sensor_c >= 5 and sensor_c <= 10 :
+    if sensor_c >= 5 and sensor_c <= 9 :
     # if sensor_c <= 9 :
         # print("Straight not possi")
         return False
@@ -129,102 +129,121 @@ def check_center(): # Checking for center wall
         return True
 
 def leftfollow():
-    delay(2)
-    global sensor_l, sensor_c, sensor_r, prev_c, l, c, r
+    global sensor_l, sensor_c, sensor_r, prev_c, first_run
+    # obj.forward()
+    delay(5)
+    if first_run :
+        prev_c = sensor_c
+        first_run = False
     
     # while not rospy.is_shutdown():
     while(1) :
-        obj.move()
-        if check_left():  #left turn possible
-            # delay(5)
-            if l==0 :
+        # obj.forward()
+        if (prev_c - sensor_c) <= 18 and sensor_c>=10 :
+            obj.move()
+        else :
+            if check_left():  #left turn possible
+                delay(5)
+                change_dir(-1)
+                left_exchange()
+                print("\nExchanged left")
+                print("Turning left...\n")
                 prev_c = sensor_c
-                while ((prev_c - sensor_c) <=7) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
+
+                # else :
+                #     prev_c = sensor_c
+                #     while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                #         # print("Sensor_c inside while:", sensor_c)
+                #         # print("Difference inside while: ", prev_c - sensor_c)
+                #         obj.move()
+
+                #     delay(5)
+                #     change_dir(-1)
+                #     left_exchange()
+                #     print("\nExchanged left")
+                #     print("Turning left...\n")
+            
+                # prev_c = sensor_c
+                # l = 1
+                # r = 0
+                # while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                #     # print("Sensor_c inside while:", sensor_c)
+                #     # print("Difference inside while: ", prev_c - sensor_c)
+                #     obj.move()
+                
+                # obj.stop()
+                # delay(1)
+
+
+            elif check_center():
+                # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
+                # obj.move()
+                prev_c = sensor_c
+                # l=0
+                # r=0
+                # pass
+                # print("Moving forward")
+                
+
+            elif check_right():
+                delay(5)
+                change_dir(1)
+                right_exchange()
+                print("\nExchanged right")
+                print("Turning right...\n")
+                prev_c = sensor_c
+
+                # while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
                     # print("Sensor_c inside while:", sensor_c)
                     # print("Difference inside while: ", prev_c - sensor_c)
-                    obj.move()
+                    # obj.move()
 
-            # delay(5)
-            else :
+                # delay(5)
+                # change_dir(1)
+                # right_exchange()
+                # print("\nExchanged right")
+                # print("Turning right...\n")
+            
+                # prev_c = sensor_c
+                # l = 0
+                # r = 1
+
+                # while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                #     # print("Sensor_c inside while:", sensor_c)
+                #     # print("Difference inside while: ", prev_c - sensor_c)
+                #     obj.move()
+                
+                # # obj.stop()
+                # delay(1)
+
+            else:
+                # Dead End
+                delay(5)
+                change_dir(2)
+                deadend_exchange()
+                print("\nExchanged deadend")
+                print("U turning...\n")
                 prev_c = sensor_c
-                while ((prev_c - sensor_c) <= 3) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
-                    print("Sensor_c", sensor_c)
-                    obj.move()
-            change_dir(-1)
-            left_exchange()
-            # print("\nExchanged left")
-            print("Turning left...done")
+
+                # while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                #     # print("Sensor_c inside while:", sensor_c)
+                #     # print("Difference inside while: ", prev_c - sensor_c)
+                #     obj.move()
+
+                # delay(5)
+                # change_dir(2)
+                # deadend_exchange()
+                # print("\nExchanged deadend")
+                # print("U turning...\n")
             
-            delay(2)
-            prev_c = sensor_c
-            while ((prev_c - sensor_c) <=7) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
-                obj.move()
-            print("Now, next........")
-            
-            delay(2)
-
-            # delay(1)
-            l = 1
-            r = 0
-
-        elif check_center():
-            # print("l: {} \t c: {} \t r: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
-            obj.move()
-            l = 0
-            r = 0
-
-        elif check_right():
-            # delay(5)
-            if r==0 :
-                prev_c = sensor_c
-                while ((prev_c - sensor_c) <= 10) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
-                    obj.move()
-
-            # delay(5)
-            else :
-                prev_c = sensor_c
-                while ((prev_c - sensor_c) <= 3) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
-                    print("Sensor_c", sensor_c)
-                    obj.move()
-            change_dir(1)
-            right_exchange()
-            # print("\nExchanged right")
-            print("Turning right...done\n")
-         
-            prev_c = sensor_c
-            while ((prev_c - sensor_c) <= 10) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
-                obj.move()
-            
-            # obj.stop()
-            # delay(1)
-            l = 0
-            r = 1
-
-        else:
-            # Dead End
-            # prev_c = sensor_c
-            # while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
-            #     # print("Sensor_c inside while:", sensor_c)
-            #     # print("Difference inside while: ", prev_c - sensor_c)
-            #     obj.move()
-
-            # delay(5)
-            change_dir(2)
-            deadend_exchange()
-            print("\nExchanged deadend")
-            print("U turning...\n")
-         
-            # prev_c = sensor_c
-            # while ((prev_c - sensor_c) <= 12) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
-                # print("Sensor_c inside while:", sensor_c)
-                # print("Difference inside while: ", prev_c - sensor_c)
-                # obj.move()
-            
-            # obj.stop()
-            # delay(5)
-            l = 0
-            r = 0
-
+                # prev_c = sensor_c
+                # while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=10 :
+                    # print("Sensor_c inside while:", sensor_c)
+                    # print("Difference inside while: ", prev_c - sensor_c)
+                    # obj.move()
+                
+                # obj.stop()
+                # delay(5)
 
     rospy.spin()
 
@@ -255,4 +274,3 @@ if __name__ == '__main__':
 #     else:
 #         print("Center wall not found")
 #         return True
-

@@ -96,11 +96,12 @@ def check_left(): # Checking for left wall
     global sensor_l, sensor_c, sensor_r, sensor_b
     # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))    
     # print("Checking left wall...")
-    if sensor_r >= 5 and sensor_r <= 10 :
+    if sensor_l >= 5 and sensor_l <= 8 :
     # if sensor_l <= 9:
         # print("Left not possi")
         return False
     elif (sensor_l+sensor_r)>18 :
+        print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
         print("\nLeft possible!\n")
         return True
 
@@ -108,11 +109,12 @@ def check_right(): # Checking for right wall
     global sensor_l, sensor_c, sensor_r, sensor_b
     # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
     # print("Checking right wall...")
-    if sensor_r >= 5 and sensor_r <= 10 :
+    if sensor_r >= 5 and sensor_r <= 8 :
     # if sensor_l <= 9:
         # print("Right not possi")
         return False
     elif (sensor_l+sensor_r)>18 :
+        print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
         print("\nRight possible!\n")
         return True
 
@@ -120,7 +122,7 @@ def check_center(): # Checking for center wall
     global sensor_l, sensor_c, sensor_r, sensor_b
     # print("l: {} \t c: {} \t r: {} \t b: {}".format(sensor_l, sensor_c, sensor_r, sensor_b))
     # print("Checking center wall...")
-    if sensor_c >= 5 and sensor_c <= 10 :
+    if sensor_c >= 5 and sensor_c <= 9 :
     # if sensor_c <= 9 :
         # print("Straight not possi")
         return False
@@ -129,7 +131,7 @@ def check_center(): # Checking for center wall
         return True
 
 def leftfollow():
-    delay(2)
+    delay(5)
     global sensor_l, sensor_c, sensor_r, prev_c, l, c, r
     
     # while not rospy.is_shutdown():
@@ -139,7 +141,7 @@ def leftfollow():
             # delay(5)
             if l==0 :
                 prev_c = sensor_c
-                while ((prev_c - sensor_c) <=7) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
+                while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
                     # print("Sensor_c inside while:", sensor_c)
                     # print("Difference inside while: ", prev_c - sensor_c)
                     obj.move()
@@ -147,21 +149,22 @@ def leftfollow():
             # delay(5)
             else :
                 prev_c = sensor_c
-                while ((prev_c - sensor_c) <= 3) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
-                    print("Sensor_c", sensor_c)
+                while ((prev_c - sensor_c) <= 5) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
+                    # print("Sensor_c", sensor_c)
                     obj.move()
             change_dir(-1)
             left_exchange()
             # print("\nExchanged left")
             print("Turning left...done")
             
-            delay(2)
+            delay(5)
+         
             prev_c = sensor_c
-            while ((prev_c - sensor_c) <=7) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
+            while ((prev_c - sensor_c) <= 11) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
                 obj.move()
             print("Now, next........")
             
-            delay(2)
+            delay(5)
 
             # delay(1)
             l = 1
@@ -177,13 +180,13 @@ def leftfollow():
             # delay(5)
             if r==0 :
                 prev_c = sensor_c
-                while ((prev_c - sensor_c) <= 10) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
+                while ((prev_c - sensor_c) <= 9) and (prev_c - sensor_c) >= 0 and sensor_c>=7 :
                     obj.move()
 
             # delay(5)
             else :
                 prev_c = sensor_c
-                while ((prev_c - sensor_c) <= 3) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
+                while ((prev_c - sensor_c) <= 2) and (prev_c - sensor_c) >= 0 and sensor_c>=7 :
                     print("Sensor_c", sensor_c)
                     obj.move()
             change_dir(1)
@@ -192,7 +195,7 @@ def leftfollow():
             print("Turning right...done\n")
          
             prev_c = sensor_c
-            while ((prev_c - sensor_c) <= 10) and (prev_c - sensor_c) >= 0 and sensor_c>=8 :
+            while ((prev_c - sensor_c) <= 11) and (prev_c - sensor_c) >= 0 and sensor_c>=7 :
                 obj.move()
             
             # obj.stop()
@@ -255,4 +258,3 @@ if __name__ == '__main__':
 #     else:
 #         print("Center wall not found")
 #         return True
-
